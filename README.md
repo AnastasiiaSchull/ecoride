@@ -1,0 +1,36 @@
+#  EcoRide – Plateforme de covoiturage écoresponsable
+
+Ce projet a été réalisé dans le cadre du Titre Professionnel Développeur Web et Web Mobile (TP DWWM).
+
+##  Objectif
+
+Développer une application web responsive pour promouvoir le covoiturage et réduire l'empreinte écologique des déplacements.
+
+
+##  Stack technique
+
+- **Front-end** : HTML5, CSS3 (Bootstrap), JavaScript
+- **Back-end** : PHP avec PDO
+- **Base de données relationnelle** : MySQL
+- **Déploiement envisagé** : l’hébergement sera effectué sur une plateforme comme Vercel, Fly.io ou Heroku selon la compatibilité et les besoins techniques.
+- **Gestion de projet** : Jira
+
+
+## Fonctionnalités principales
+
+- Page d’accueil avec barre de recherche
+- Liste de covoiturages avec filtres
+- Détail du trajet
+- Connexion / Inscription utilisateur
+- Espace utilisateur : chauffeur, passager
+- Création et participation aux trajets
+- Historique, démarrage/arrêt du covoiturage
+- Espace employé et admin (avis, statistiques, gestion des comptes)
+
+
+
+
+
+
+
+

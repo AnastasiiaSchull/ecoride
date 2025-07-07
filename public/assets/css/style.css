@@ -1,0 +1,248 @@
+html {
+  font-size: 16px; /*  1rem = 16px */
+}
+/* 892×634 px */
+html,
+body {
+  font-family: "Inter", sans-serif;
+  /* background-color: #f4f4f4; */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+}
+.main-header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: white;
+}
+
+.logo {
+  font-weight: 700; /* bold */
+  font-size: 1.25rem;
+  color: #007a87;
+  text-decoration: none;
+}
+.logo:hover {
+  color: #108293;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  font-weight: 600; /* semi-bold */
+  font-size: 1rem;
+  color: #69c5ff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-links :hover {
+  color: #108293;
+}
+
+.hero {
+  position: relative;
+  text-align: center;
+}
+.hero img {
+  width: 100%;
+  height: 12.25rem; /* 196px */
+  object-fit: cover;
+}
+.hero h1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  color: #108293;
+  margin-top: 1.375rem; /*22px*/
+}
+
+.search {
+  text-align: center;
+}
+.search-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  max-width: 1400px;
+  margin: 0 1rem;
+  font-size: 1rem;
+}
+
+.option-group {
+  display: flex;
+  margin-top: 0.9375rem; /*15px*/
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-form input[type="text"] {
+  width: 8rem;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+
+.search-form button {
+  background-color: #4eacef;
+  color: white;
+  padding: 0.625em 1.25em;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-top: 0.625rem;
+}
+.search-form label,
+.search-form span {
+  font-weight: 500;
+  color: #686868;
+}
+
+.date-picker {
+  display: flex;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin-top: 0.9375rem;
+  width: fit-content;
+}
+
+.date-picker input[type="date"] {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+  margin-top: 0.9375rem;
+}
+.short-input {
+  width: 2.25rem;
+  border: none;
+  background: transparent;
+  outline: none;
+  margin-top: 0.9375rem;
+}
+
+.div-centre{
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+}
+
+.upcoming {
+  padding: 1.25rem; /* 20px */
+  text-align: center;
+}
+.trajets {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem; /* 20px */
+  margin-top: 0.625rem; /* 10px */
+}
+.trajet {
+  border: 0.125rem solid #3b8dab; /* 2px */
+  padding: 0.625rem 1.25rem; /* 10px 20px */
+  border-radius: 0.5rem; /* 8px */
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+
+.container {
+  max-width: 31.25rem; /* 500px */
+  background-color: white;
+  padding: 1.5625rem; /* 25px */
+  margin: 0 auto;
+  margin-top: 4.1875rem;
+  border-radius: 0.5rem; /* 8px */
+  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1); /* 10px */
+}
+label {
+  display: block;
+  margin-top: 0.9375rem; /* 15px */
+  font-size: 0.8125rem;
+}
+input[type="radio" i] {
+  margin-bottom: 0.9375rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 0.5em;
+  margin-top: 0.3125rem; /* 5px */
+  border: none;
+  border-radius: none;
+}
+.radio {
+  display: inline-flex;
+  padding-right: 0.625rem;
+}
+.role {
+  margin-left: -0.3125rem;
+  margin-right: 0.9375rem;
+}
+
+.btn {
+  background-color: #4eacef;
+  color: white;
+  border-radius: none;
+  border: 0.5px;
+  border-radius: 2px;
+  font-size: 1rem;
+  padding: 0.3125rem 0.625em;
+}
+.errors {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.625rem; /* 10px */
+  border-radius: 0.3125rem; /* 5px */
+  margin-bottom: 0.9375rem; /* 15px */
+}
+
+footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem 0;
+  font-size: 0.875rem;
+  color: #333;
+}
+
+footer a {
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 0.5rem;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 1.5rem; /* 24px */
+  }
+ 
+}

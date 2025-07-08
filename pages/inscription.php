@@ -3,7 +3,7 @@ session_start();
 ?>
 
 <?php
-require_once '../config/db.php'; 
+require_once '../config/db.php';
 
 $errors = [];
 
@@ -12,12 +12,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $email = trim($_POST["email"]);
   $password = $_POST["password"];
   $confirm_password = $_POST["confirm_password"];
-  $role = $_POST["role"];
+  if (!isset($_POST["roles"]) || empty($_POST["roles"])) {
+    $errors[] = "Veuillez sélectionner au moins un rôle.";
+  } else {
+    $roles = $_POST["roles"];
+  }
+
   $marque = $_POST["marque"] ?? null;
+  $modele = $_POST["modele"] ?? null;
   $couleur = $_POST["couleur"] ?? null;
+  $energie = $_POST["energie"] ?? null;
   $places = $_POST["places"] ?? null;
 
-  if (empty($pseudo) || empty($email) || empty($password) || empty($confirm_password) || empty($role)) {
+  if (empty($pseudo) || empty($email) || empty($password) || empty($confirm_password) || empty($roles)) {
     $errors[] = "Tous les champs obligatoires doivent être remplis.";
   }
 
@@ -26,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   }
 
   // corection du email
-  $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = ?");
+  $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
   $stmt->execute([$email]);
   if ($stmt->fetch()) {
     $errors[] = "Cet email est déjà utilisé.";
@@ -35,9 +42,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (empty($errors)) {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $pdo->prepare("INSERT INTO utilisateurs (pseudo, email, mot_de_passe, role, marque, couleur, places)
-                               VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$pseudo, $email, $hashed_password, $role, $marque, $couleur, $places]);
+    // insérer l'utilisateur
+    $stmt = $pdo->prepare("INSERT INTO users (pseudo, email, password) VALUES (?, ?, ?)");
+    $stmt->execute([$pseudo, $email, $hashed_password]);
+
+    // récupérer l'ID du nouvel utilisateur
+    $user_id = $pdo->lastInsertId();
+
+    // trouver id du rôle (depuis table roles)
+    foreach ($roles as $role) {
+      $stmt = $pdo->prepare("SELECT id FROM roles WHERE nom = ?");
+      $stmt->execute([$role]);
+      $role_id = $stmt->fetchColumn();
+
+      if ($role_id) {
+        // ajouter dans user_roles
+        $stmt = $pdo->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");
+        $stmt->execute([$user_id, $role_id]);
+      }
+    }
+    // si le rôle est conducteur, ajouter un véhicule
+    if (in_array('conducteur', $roles)) {
+      if (empty($marque) || empty($modele) || empty($couleur) || empty($energie) || empty($places) || $places <= 0) {
+        $errors[] = "Tous les champs du véhicule doivent être remplis correctement.";
+      } else {
+        $stmt = $pdo->prepare("INSERT INTO vehicules (user_id, marque, modele, couleur, energie, places) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$user_id, $marque, $modele, $couleur, $energie, $places]);
+      }
+    }
 
     header("Location: connexion.php");
     exit;
@@ -89,17 +121,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <label>Confirmer mot de passe :
         <input type="password" name="confirm_password" required>
       </label>
-      <div class="radio">
-        <label  class="role"><input type="radio" name="role" value="conducteur" onclick="toggleCarFields()" required>
-          Conducteur</label>
-        <label><input type="radio" name="role" value="passager" onclick="toggleCarFields()"> Passager</label>
+      <div class="checkbox">
+        <label><input type="checkbox" name="roles[]" value="conducteur" onclick="toggleCarFields()"> Conducteur</label>
+        <label><input type="checkbox" name="roles[]" value="passager" onclick="toggleCarFields()"> Passager</label>
       </div>
+
       <div id="carFields" style="display: none;">
         <label>Marque de voiture :
           <input type="text" name="marque">
         </label>
+        <label>Modèle :
+          <input type="text" name="modele">
+        </label>
         <label>Couleur :
           <input type="text" name="couleur">
+        </label>
+        <label>Type de carburant :
+          <select name="energie" required>
+            <option value="">-- Choisissez --</option>
+            <option value="essence">Essence</option>
+            <option value="diesel">Diesel</option>
+            <option value="electrique">Électrique</option>
+          </select>
         </label>
         <label>Nombre de places :
           <input type="number" name="places" min="1">
@@ -116,11 +159,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php include '../includes/footer.php'; ?>
 <script>
   function toggleCarFields() {
-    const role = document.querySelector('input[name="role"]:checked').value;
+    const checkboxes = document.querySelectorAll('input[name="roles[]"]:checked');
     const carFields = document.getElementById('carFields');
-    carFields.style.display = role === 'conducteur' ? 'block' : 'none';
+
+    let isConducteurSelected = false;
+
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.value === 'conducteur') {
+        isConducteurSelected = true;
+      }
+    });
+
+    carFields.style.display = isConducteurSelected ? 'block' : 'none';
   }
+
+  // запускаем при загрузке страницы (если пользователь нажал Назад в браузере, например)
+  window.addEventListener('DOMContentLoaded', toggleCarFields);
 </script>
+
 </body>
 
 </html>

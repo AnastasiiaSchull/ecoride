@@ -1,6 +1,6 @@
-<?php include '../includes/header.php'; ?>
+<?php session_start(); ?>
 
-<h1>Bienvenue sur EcoRide</h1>
-<p>Plateforme de covoiturage écologique.</p>
 
-<?php include '../includes/footer.php'; ?>
+<?php
+header("Location: ../public/index.php");
+exit;

@@ -184,7 +184,7 @@ label {
   margin-top: 0.9375rem; /* 15px */
   font-size: 0.8125rem;
 }
-input[type="radio" i] {
+input[type="checkbox" i] {
   margin-bottom: 0.9375rem;
 }
 
@@ -196,7 +196,7 @@ input[type="password"] {
   border: none;
   border-radius: none;
 }
-.radio {
+.checkbox {
   display: inline-flex;
   padding-right: 0.625rem;
 }

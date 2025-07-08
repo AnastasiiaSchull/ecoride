@@ -7,14 +7,14 @@
     <?php if (!isset($_SESSION['user'])): ?>
       <a class="nav-links" href="/ecoride/pages/connexion.php">Connexion</a>
     <?php else: ?>
-      <a class="nav-links" href="/pages/espace.php">Mon Espace</a>
-      <a class="nav-links" href="/logout.php">Déconnexion</a>
+      <a class="nav-links" href="/ecoride/pages/mon_espace.php">Mon Espace</a>
+      <a class="nav-links" href="/ecoride/pages/logout.php">Déconnexion</a>
 
-      <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+      <?php if (in_array('admin', $_SESSION['user']['roles'])): ?>
         <a class="nav-links" href="/admin/dashboard.php">Admin</a>
       <?php endif; ?>
 
-      <?php if ($_SESSION['user']['role'] === 'employe'): ?>
+      <?php if (in_array('employe', $_SESSION['user']['roles'])): ?>
         <a class="nav-links" href="/employe/avis.php">Espace Employé</a>
       <?php endif; ?>
     <?php endif; ?>

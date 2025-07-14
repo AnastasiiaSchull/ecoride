@@ -7,7 +7,7 @@ $villesDepart = $pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
 $sql = "SELECT DISTINCT ville_arrivee FROM trajets";
 $villesArrivee = $pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
 
-// получить 3 ближайших маршрута
+// obtenir les 3 trajets les plus proches
 $sql = "SELECT ville_depart, ville_arrivee, MIN(date_depart) as prochaine_date
         FROM trajets
         WHERE date_depart >= CURDATE()
@@ -79,30 +79,32 @@ $trajetsAVenir = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
           <i class="bi bi-person"></i>
           <input type="number" name="passager" value="1" min="1" max="8" class="short-input" placeholder="Passagers">
           <span>passager</span>
-          <div id="places-info" class="info-text"></div> <!-- вот сюда -->
+          <div id="places-info" class="info-text"></div> 
         </div>
 
         <button type="submit">Rechercher</button>
+        <span id="form-error" class="error-message hidden">
+        </span>
+
       </form>
     </section>
 
     <section class="upcoming">
       <h2>Trajets à venir</h2>
-     <div class="trajets">
-  <?php foreach ($trajetsAVenir as $trajet): ?>
-    <a 
-      class="trajet" 
-      href="../pages/covoiturages.php?depart=<?= urlencode($trajet['ville_depart']) ?>&destination=<?= urlencode($trajet['ville_arrivee']) ?>&date=<?= date('Y-m-d', strtotime($trajet['prochaine_date'])) ?>&passager=1">
-      <?= htmlspecialchars($trajet['ville_depart']) ?> → <?= htmlspecialchars($trajet['ville_arrivee']) ?>
-    </a>
-  <?php endforeach; ?>
-</div>
+      <div class="trajets">
+        <?php foreach ($trajetsAVenir as $trajet): ?>
+          <a class="trajet"
+            href="../pages/covoiturages.php?depart=<?= urlencode($trajet['ville_depart']) ?>&destination=<?= urlencode($trajet['ville_arrivee']) ?>&date=<?= date('Y-m-d', strtotime($trajet['prochaine_date'])) ?>&passager=1">
+            <?= htmlspecialchars($trajet['ville_depart']) ?> → <?= htmlspecialchars($trajet['ville_arrivee']) ?>
+          </a>
+        <?php endforeach; ?>
+      </div>
 
     </section>
   </main>
 
   <script src="../public/assets/js/covoiturage-datepicker.js"></script>
-  
+  <script src="../public/assets/js/form-error-checker.js"></script>
   <?php include_once '../includes/footer.php'; ?>
 
 </body>

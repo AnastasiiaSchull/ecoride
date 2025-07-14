@@ -14,7 +14,8 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
-// Получение ролей пользователя
+// récupération des rôles de l'utilisateur
+
 $stmt = $pdo->prepare("SELECT r.nom FROM roles r
                       JOIN user_roles ur ON r.id = ur.role_id
                       WHERE ur.user_id = ?");
@@ -27,7 +28,8 @@ $stmt = $pdo->prepare("SELECT * FROM vehicules WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $vehicules = $stmt->fetchAll();
 
-// получение всех préférences из базы
+// récupération de toutes les préférences depuis la base de données
+
 $stmt = $pdo->query("SELECT * FROM preferences");
 $allPreferences = $stmt->fetchAll();
 ?>
@@ -61,6 +63,24 @@ $allPreferences = $stmt->fetchAll();
 
     <?php if (in_array('conducteur', $roles)): ?>
       <section style="margin-top: 3rem;">
+        <!-- section photo de profil -->
+        <section style="margin-top: 2rem;">
+          <h3>Photo de profil</h3>
+
+          <?php if (!empty($user['photo'])): ?>
+            <img src="../public/assets/uploads/<?= htmlspecialchars($user['photo']) ?>" alt="Photo du conducteur"
+              class="avatar">
+          <?php endif; ?>
+          <hr>
+          <form action="upload_photo.php" method="post" enctype="multipart/form-data">
+            <label>Choisir une photo :
+              <input type="file" name="photo" accept="image/*" required>
+            </label><br>
+            <button type="submit" class="btn">Mettre à jour</button>
+          </form>
+
+        </section>
+        <hr>
         <h3>Ajouter un véhicule</h3>
         <form method="POST" action="traitement_vehicule.php">
           <label>Marque : <input type="text" name="marque" required></label><br>
@@ -84,9 +104,8 @@ $allPreferences = $stmt->fetchAll();
         </form>
       </section>
 
-
-
       <section style="margin-top: 3rem;">
+        <hr>
         <h3>Vos véhicules enregistrés</h3>
         <!-- affichage des véhicules déjà ajoutés -->
         <?php if (count($vehicules) > 0): ?>

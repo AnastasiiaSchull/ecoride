@@ -1,0 +1,45 @@
+
+.detail-container {
+  max-width: 50rem; /* 800px */
+  margin: 2rem auto;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: "Inter", sans-serif;
+  color: #333;
+}
+
+.detail-container h2 {
+  color: #007a87;
+  margin-bottom: 1rem;
+}
+
+.detail-container p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.detail-section {
+  margin-top: 2rem;
+}
+
+.detail-section h3 {
+  color: #108293;
+  margin-bottom: 0.5rem;
+}
+
+.detail-photo-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.detail-photo-wrapper img {
+  width: 7.5rem;   /* 120px */
+  height: 7.5rem; 
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #4eacef;
+  padding: 2px;
+}

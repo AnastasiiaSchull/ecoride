@@ -131,12 +131,12 @@ if (!empty($conducteursIds)) {
   $stmtNotes->execute($conducteursIds);
   $notesData = $stmtNotes->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
 
-  // Добавляем массив оценок к каждому маршруту
+  // // ajout du tableau des notes à chaque trajet
   foreach ($trajets as &$trajet) {
     $cid = $trajet['conducteur_id'];
     $trajet['notes'] = $notesData[$cid] ?? [];
   }
-  unset($trajet); // важно для безопасности (иначе $trajet сохранится как ссылка)
+  unset($trajet); // ceci est important pour la sécurité (sinon $trajet resterait une référence)
 }
 
 ?>
@@ -212,6 +212,7 @@ if (!empty($conducteursIds)) {
         </div>
 
         <button type="submit">Rechercher</button>
+        <span id="form-error" class="error-message hidden"></span>
       </form>
     </section>
 
@@ -234,7 +235,7 @@ if (!empty($conducteursIds)) {
             ⭐</label>
         </div>
 
-        <!-- скрытые поля, чтобы сохранить остальные параметры -->
+      <!-- champs cachés pour conserver les autres paramètres -->
         <input type="hidden" name="type" value="<?= $type ?>">
         <input type="hidden" name="depart" value="<?= htmlspecialchars($depart) ?>">
         <input type="hidden" name="destination" value="<?= htmlspecialchars($destination) ?>">
@@ -298,8 +299,6 @@ if (!empty($conducteursIds)) {
 
             <p>Conducteur : <?= htmlspecialchars($trajet['conducteur_nom']) ?> <span>(⭐ <?= $note ?>)</span></p>
             <p>Notes : <?= !empty($notes) ? implode(', ', $notes) : '–' ?></p>
-
-            <!-- <p>Conducteur : <?= htmlspecialchars($trajet['conducteur_nom']) ?> <span>(⭐ <?= $note ?>)</span></p> -->
             <p>Places restantes : <?= $trajet['places_dispo'] ?></p>
             <p>Prix : <?= number_format($trajet['prix'], 2) ?>€ Heure :
               <?= date('H:i', strtotime($trajet['date_depart'])) ?> ➔
@@ -325,6 +324,7 @@ if (!empty($conducteursIds)) {
       });
     </script>
 
+    <script src="../public/assets/js/form-error-checker.js"></script>
     <?php include_once '../includes/footer.php'; ?>
 
 </body>

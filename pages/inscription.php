@@ -59,6 +59,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // ajouter dans user_roles
         $stmt = $pdo->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");
         $stmt->execute([$user_id, $role_id]);
+        // si le rôle est passager, ajouter 5 crédits (si encore 0 crédits)
+        if ($role === 'passager') {
+          $stmt = $pdo->prepare("UPDATE users SET credits = 5 WHERE id = ? AND credits = 0");
+          $stmt->execute([$user_id]);
+        }
       }
     }
     // si le rôle est conducteur, ajouter un véhicule
@@ -173,7 +178,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     carFields.style.display = isConducteurSelected ? 'block' : 'none';
   }
 
-  // запускаем при загрузке страницы (если пользователь нажал Назад в браузере, например)
+  // еxécuter au chargement de la page (par exemple, si l'utilisateur a cliqué sur "Retour" dans le navigateur)
+
   window.addEventListener('DOMContentLoaded', toggleCarFields);
 </script>
 

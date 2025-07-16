@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("UPDATE users SET credits = credits + ? WHERE id = ?");
         $stmt->execute([$montant, $user_id]);
 
-        $message = "Votre compte a été crédité de $montant crédits.";
+        $message = "✔ Votre compte a été crédité de $montant crédits!";
     } else {
         $message = "Montant invalide.";
     }

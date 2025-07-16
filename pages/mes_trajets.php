@@ -57,6 +57,8 @@ $mes_trajets = $stmt->fetchAll();
     </ul>
   <?php else: ?>
     <p>Vous n'avez pas encore publié de trajet.</p>
+    <a href="creer_trajet.php" class="btn" style="margin-bottom: 1rem; display: inline-block;">Créer un nouveau trajet</a>
+
   <?php endif; ?>
 
 </main>

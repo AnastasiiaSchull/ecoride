@@ -15,8 +15,14 @@
     <?php include '../includes/header.php'; ?>
     <main>
         <h2 class="search" style="margin-top: 1.125rem">Connexion</h2>
-        <div class="container" style="margin-top: 1.25rem">
 
+        <div class="container" style="margin-top: 1.25rem">
+            <?php if (isset($_SESSION['flash'])): ?>
+                <div class="warning">
+                    <?= htmlspecialchars($_SESSION['flash']) ?>
+                </div>
+                <?php unset($_SESSION['flash']); ?>
+            <?php endif; ?>
             <form method="POST" action="traitement_connexion.php">
                 <label for="email">Email :
                     <input type="email" id="email" name="email" required />
@@ -34,6 +40,14 @@
                     <a href="inscription.php" style="margin-left: 1.25rem;">Créer un compte</a>
                 </p>
             </div>
+        </div>
+        <div class="container">
+            <p style="margin-top: 1rem; color: #888; text-align: center;">
+                <strong>Infos de test :</strong><br>
+                Admin -> <code>admin@agora.com</code> / <code>admin</code><br>
+                Employé -> <code>employe1@gmail.com</code> / <code>motdepasse</code><br>
+                User -> <code>lucas.durand@gmail.com</code> / <code>motdepasse</code>
+            </p>
         </div>
     </main>
     <?php include '../includes/footer.php'; ?>

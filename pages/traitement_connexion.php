@@ -11,6 +11,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
+    // vérifier s'il est suspendu
+    if ($user && !$user['is_active']) {
+        $_SESSION['flash'] = "Ce compte a été suspendu.";
+        header("Location: connexion.php");
+        exit;
+    }
+
     // vérifier l'utilisateur et le mot de passe
     if ($user && password_verify($password, $user['password'])) {
         // récupérer ses rôles

@@ -47,6 +47,8 @@ if (!$trajet) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -98,20 +100,36 @@ if (!$trajet) {
       <br>
       <?php if (isset($_SESSION['user_id'])): ?>
         <?php if ($trajet['places_dispo'] > 0): ?>
-          <form method="post" action="reserver.php">
+          <form id="reserveForm" action="reserver.php" method="POST">
             <input type="hidden" name="trajet_id" value="<?= $trajet['id'] ?>">
-            <button type="submit" class="btn details-btn">Participer</button>
+            <button type="button" onclick="confirmReservation()" class="btn details-btn">Participer</button>
           </form>
         <?php else: ?>
           <p style="color:red;">Aucune place disponible.</p>
         <?php endif; ?>
       <?php else: ?>
-        <p><a href="login.php" class="details-btn">Connectez-vous</a> pour participer à ce covoiturage.</p>
+        <p><a href="connexion.php" class="details-btn">Connectez-vous</a> pour participer à ce covoiturage.</p>
       <?php endif; ?>
     </section>
 
   </main>
   <?php include_once '../includes/footer.php'; ?>
 
+  <script>
+  function confirmReservation() {
+    Swal.fire({
+      title: 'Confirmer la réservation ?',
+      text: 'Ce trajet vous coûtera 1 crédit.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, je confirme',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('reserveForm').submit();
+      }
+    });
+  }
+</script>
 </body>
 </html>

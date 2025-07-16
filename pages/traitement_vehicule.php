@@ -23,22 +23,21 @@ if (empty($marque) || empty($modele) || empty($couleur) || empty($energie) || $p
 }
 
 if (!empty($errors)) {
-  // здесь можно сохранить $errors в сессию и показать пользователю
+  // ici, on peut enregistrer $errors dans la session et les afficher à l'utilisateur
   foreach ($errors as $e) {
     echo "<p style='color:red'>" . htmlspecialchars($e) . "</p>";
   }
   exit;
 }
 
-// валидация
+// validation
 if ($marque && $modele && $couleur && $energie && $places > 0) {
   $stmt = $pdo->prepare("INSERT INTO vehicules (user_id, marque, modele, couleur, energie, places) VALUES (?, ?, ?, ?, ?, ?)");
   $stmt->execute([$user_id, $marque, $modele, $couleur, $energie, $places]);
-
 }
 
 $vehicule_id = $pdo->lastInsertId();
-// 2. Вставка préférences (если есть)
+// insertion des préférences (si présentes)
 if (!empty($preferences)) {
   $stmtPref = $pdo->prepare("INSERT INTO vehicule_preferences (vehicule_id, preference_id) VALUES (?, ?)");
 

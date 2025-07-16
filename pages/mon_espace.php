@@ -32,6 +32,31 @@ $vehicules = $stmt->fetchAll();
 
 $stmt = $pdo->query("SELECT * FROM preferences");
 $allPreferences = $stmt->fetchAll();
+
+// récupère le nombre de crédits restants (в любом случае пригодится)
+$credits = (int) $user['credits'];
+
+// crédits utilisés (si passager)
+$credits_utilises = null;
+if (in_array('passager', $roles)) {
+  $stmt = $pdo->prepare("SELECT COUNT(*) FROM reservations WHERE passager_id = ?");
+  $stmt->execute([$user_id]);
+  $credits_utilises = $stmt->fetchColumn(); // 1 réservation = 1 crédit
+}
+
+// crédits gagnés (si conducteur)
+$credits_gagnes = null;
+if (in_array('conducteur', $roles)) {
+  $stmt = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM reservations r 
+        JOIN trajets t ON r.trajet_id = t.id 
+        WHERE t.conducteur_id = ?
+    ");
+  $stmt->execute([$user_id]);
+  $credits_gagnes = $stmt->fetchColumn();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -123,6 +148,33 @@ $allPreferences = $stmt->fetchAll();
         <?php endif; ?>
       </section>
     <?php endif; ?>
+    <hr>
+    <section style="margin-top: 2rem;">
+      <h3>Votre solde de crédits :</h3>
+      <p><strong><?= $credits ?> crédits</strong> disponibles</p>
+      <a href="ajouter_credits.php" class="btn" style="margin-top: 0.5rem; display: inline-block;">Ajouter des
+        crédits</a>
+    </section>
+
+    <?php if ($credits_utilises !== null): ?>
+      <section style="margin-top: 2rem;">
+        <h3>Crédits utilisés (en tant que passager) :</h3>
+        <p><?= $credits_utilises ?> trajet(s) réservé(s), donc <?= $credits_utilises ?> crédit(s) utilisés.</p>
+      </section>
+    <?php endif; ?>
+    <hr>
+    <?php if ($credits_gagnes !== null): ?>
+      <section style="margin-top: 2rem;">
+        <h3>Crédits gagnés (en tant que conducteur) :</h3>
+        <p><?= $credits_gagnes ?> réservation(s) reçue(s), donc <?= $credits_gagnes ?> crédit(s) gagnés.</p>
+      </section>
+    <?php endif; ?>
+    <hr>
+    <?php if (in_array('conducteur', $roles)): ?>
+      <a href="mes_trajets.php" class="btn">Gérer mes trajets</a>
+    <?php endif; ?>
+    <a href="mes_reservations.php" class="btn">Voir mes réservations</a>
+
   </main>
 
   <?php include '../includes/footer.php'; ?>

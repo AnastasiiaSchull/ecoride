@@ -2,19 +2,19 @@
 
 require_once '../config/db.php';
 
-// получаем список городов отправления
+// obtenir la liste des villes de départ
 $stmt = $pdo->query("SELECT  DISTINCT  ville_depart FROM trajets ORDER BY ville_depart ASC");
 $villesDepart = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-// получаем список городов назначения
+// obtenir la liste des villes de destination
 $stmt = $pdo->query("SELECT  DISTINCT ville_arrivee FROM trajets ORDER BY ville_arrivee ASC");
 $villesArrivee = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-// получаем первый маршрут из базы по умолчанию
+// obtenir le premier trajet de la base par défaut
 $requete = $pdo->query("SELECT DISTINCT id ,ville_depart, ville_arrivee FROM trajets ORDER BY id ASC LIMIT 1");
 $premierTrajet = $requete->fetch();
 
-// получение параметров из GET
+// récupération des paramètres depuis GET
 $depart = $_GET['depart'] ?? $premierTrajet['ville_depart'];
 $destination = $_GET['destination'] ?? $premierTrajet['ville_arrivee'];
 $date = $_GET['date'] ?? date('Y-m-d');
@@ -22,16 +22,17 @@ $passager = $_GET['passager'] ?? 1;
 $type = $_GET['type'] ?? '';
 $filtre = $_GET['filtre'] ?? 'ecologique';
 
-// формируем заголовок
+// construction du titre
 $trajetTitre = "{$depart} → {$destination}";
 
-// если выбран фильтр prixmin — получаем минимальную цену
+// si le filtre prixmin est sélectionné — obtenir le prix minimum
 if ($filtre === 'prixmin') {
   $sqlMinPrix = "SELECT MIN(prix) FROM trajets 
-                 WHERE ville_depart = :depart 
-                   AND ville_arrivee = :destination 
-                   AND DATE(date_depart) = :date 
-                   AND places_dispo >= :passager";
+                WHERE ville_depart = :depart 
+                AND ville_arrivee = :destination 
+                --  AND DATE(date_depart) = :date 
+                AND DATE(date_depart) >= CURDATE()
+                AND places_dispo >= :passager";
   $stmtMinPrix = $pdo->prepare($sqlMinPrix);
   $stmtMinPrix->execute([
     'depart' => $depart,
@@ -44,10 +45,10 @@ if ($filtre === 'prixmin') {
 
 if ($filtre === 'prixmax') {
   $sqlMaxPrix = "SELECT MAX(prix) FROM trajets 
-                 WHERE ville_depart = :depart 
-                   AND ville_arrivee = :destination 
-                   AND DATE(date_depart) = :date 
-                   AND places_dispo >= :passager";
+                WHERE ville_depart = :depart 
+                AND ville_arrivee = :destination 
+                AND DATE(date_depart) >= CURDATE()
+                AND places_dispo >= :passager";
   $stmtMaxPrix = $pdo->prepare($sqlMaxPrix);
   $stmtMaxPrix->execute([
     'depart' => $depart,
@@ -58,7 +59,7 @@ if ($filtre === 'prixmax') {
   $prixMax = $stmtMaxPrix->fetchColumn();
 }
 
-// определяем сортировку
+// définition du tri
 $orderBy = match ($filtre) {
   'prix' => 't.prix ASC',
   'duree' => 'TIMESTAMPDIFF(MINUTE, t.date_depart, t.date_arrivee) ASC',
@@ -66,7 +67,7 @@ $orderBy = match ($filtre) {
   default => 't.eco DESC'
 };
 
-//строим основной SQL-запрос
+// construction de la requête SQL principale
 $sql = "SELECT 
             t.*, 
             u.pseudo AS conducteur_nom,
@@ -81,13 +82,11 @@ $sql = "SELECT
             ) n ON t.conducteur_id = n.conducteur_id
        
         WHERE t.ville_depart = :depart
-          AND t.ville_arrivee = :destination
-          AND DATE(t.date_depart) = :date
+          AND t.ville_arrivee = :destination          
+          AND DATE(t.date_depart) >= CURDATE()
           AND t.places_dispo >= :passager";
 
-
-
-// добавляем условие на минимальную цену, если нужно
+// ajout de la condition sur le prix minimum, si nécessaire
 if ($filtre === 'prixmin') {
   $sql .= " AND t.prix = :prixMin";
 }
@@ -98,15 +97,14 @@ if ($filtre === 'electrique') {
   $sql .= " AND t.eco = 1";
 }
 
-// завершаем запрос
+// finalisation de la requête
 $sql .= " ORDER BY $orderBy";
 
 
-// подготовка параметров
+// préparation des paramètres
 $params = [
   'depart' => $depart,
   'destination' => $destination,
-  'date' => $date,
   'passager' => $passager
 ];
 if ($filtre === 'prixmin') {
@@ -117,7 +115,7 @@ if ($filtre === 'prixmax') {
 }
 
 
-// выполняем запрос
+// exécution de la requête
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $trajets = $stmt->fetchAll();
@@ -131,7 +129,7 @@ if (!empty($conducteursIds)) {
   $stmtNotes->execute($conducteursIds);
   $notesData = $stmtNotes->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
 
-  // // ajout du tableau des notes à chaque trajet
+  //ajout du tableau des notes à chaque trajet
   foreach ($trajets as &$trajet) {
     $cid = $trajet['conducteur_id'];
     $trajet['notes'] = $notesData[$cid] ?? [];
@@ -235,7 +233,7 @@ if (!empty($conducteursIds)) {
             ⭐</label>
         </div>
 
-      <!-- champs cachés pour conserver les autres paramètres -->
+        <!-- champs cachés pour conserver les autres paramètres -->
         <input type="hidden" name="type" value="<?= $type ?>">
         <input type="hidden" name="depart" value="<?= htmlspecialchars($depart) ?>">
         <input type="hidden" name="destination" value="<?= htmlspecialchars($destination) ?>">
@@ -258,7 +256,7 @@ if (!empty($conducteursIds)) {
       <?php foreach ($trajets as $trajet): ?>
         <?php $note = $trajet['conducteur_note'] ?? '–'; ?>
 
-        <!-- карточка -->
+        <!-- carte -->
       <?php endforeach; ?>
     <?php endif; ?>
 
@@ -328,5 +326,4 @@ if (!empty($conducteursIds)) {
     <?php include_once '../includes/footer.php'; ?>
 
 </body>
-
 </html>

@@ -70,13 +70,12 @@ main {
   font-size: 2rem;
 }
 
-h2  {
+h2 {
   font-size: 1.25rem;
   color: #108293;
   margin-top: 1.375rem; /*22px*/
 }
-
-h3{
+h3 {
   color: #108293;
 }
 
@@ -117,7 +116,7 @@ h3{
   background-color: #4eacef;
   color: white;
   padding: 0.625em 1.25em;
-  border: none; 
+  border: none;
   font-weight: 600;
   margin-top: 0.625rem;
 }
@@ -149,10 +148,10 @@ h3{
   margin-top: 0.9375rem;
 }
 
-.div-centre{
+.div-centre {
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
 }
 
 .upcoming {
@@ -246,7 +245,6 @@ footer a:hover {
   .hero h1 {
     font-size: 1.5rem; /* 24px */
   }
- 
 }
 
 /* radio + select выровнены по горизонтали */
@@ -271,7 +269,6 @@ footer a:hover {
   min-width: 8rem;
 }
 
-
 .date-picker {
   position: relative;
 }
@@ -281,7 +278,7 @@ footer a:hover {
   padding: 0.5em;
   position: absolute;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-top: 5px;
 }
 .calendar-popup div {
@@ -298,10 +295,9 @@ footer a:hover {
   margin-top: 4px;
 }
 
-
 .filters {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   /* gap: 1.5rem; */
   margin-bottom: 1rem;
   padding-right: 1.5rem;
@@ -311,10 +307,10 @@ footer a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-   font-size: 1rem;
-   color: #686868;
+  font-size: 1rem;
+  color: #686868;
 }
-.h3_covoitutage{
+.h3_covoitutage {
   color: #007a87;
   padding-left: 1.5rem;
 }
@@ -324,11 +320,10 @@ footer a:hover {
   align-items: center;
   gap: 1.5rem;
   padding-left: 1.5rem;
-  font-weight:400;
+  font-weight: 400;
   margin-bottom: 1rem;
   color: #686868;
 }
-
 
 .trajets-list {
   display: flex;
@@ -342,13 +337,12 @@ footer a:hover {
   gap: 1rem;
   padding: 1rem;
   margin: 1rem;
- 
 }
 .trajet-card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width:60%;
+  width: 60%;
 }
 .trajet-time-block {
   display: flex;
@@ -363,7 +357,6 @@ footer a:hover {
   font-size: 1.1rem;
   color: #3e3d3d;
 }
-
 
 .trajet-time-block .villes {
   display: flex;
@@ -397,13 +390,18 @@ footer a:hover {
   font-weight: 500;
   margin-top: 0.5rem;
   width: fit-content;
-   cursor: pointer;
+  cursor: pointer;
 }
 
-.avatar{
+.avatar {
   width: 40px;
-    border-radius: 50%; 
+  border-radius: 50%;
   border: 2px solid #4eacef;
+}
+.with-avatar {
+  display: flex;
+  align-items: center; 
+  gap: 0.5rem;
 }
 
 .timeline {
@@ -428,7 +426,7 @@ footer a:hover {
 }
 
 .trajets a.trajet {
-  color: #000; 
+  color: #000;
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
@@ -455,8 +453,25 @@ footer a:hover {
 }
 .hidden {
   display: none;
-} 
+}
 
 .search-form span.error-message {
   color: #d8000c;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #c3e6cb;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.warning {
+  color: #31708f;
+  background-color: #d9edf7;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 1rem 0;
 }

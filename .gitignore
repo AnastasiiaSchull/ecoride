@@ -1,0 +1,17 @@
+# MongoDB
+mongo-data/
+
+# Composer
+/vendor/
+
+# Journaux et fichiers temporaires
+*.log
+*.tmp
+
+# Environnements de développement
+.vscode/
+.idea/
+
+# Fichiers système (OS)
+.DS_Store
+Thumbs.db

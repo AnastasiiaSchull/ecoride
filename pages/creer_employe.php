@@ -49,9 +49,9 @@ $stmt->execute([$pseudo, $email, $hashed]);
 
 $userId = $pdo->lastInsertId();
 
-// attribution du rôle (supposons que employé = role_id 2)
+// attribution du rôle (employé = role_id 3)
 $stmt = $pdo->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");
-$stmt->execute([$userId, 2]);
+$stmt->execute([$userId, 3]);
 
 $_SESSION['flash'] = "Employé créé avec succès.";
 header('Location: admin.php');

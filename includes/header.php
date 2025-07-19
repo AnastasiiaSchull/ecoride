@@ -8,18 +8,26 @@
       <a class="nav-links" href="/ecoride/pages/connexion.php">Connexion</a>
 
     <?php else: ?>
-       <?php
-    $photo = $_SESSION['user']['photo'] ?? 'default.png';
-    $avatarPath = "/ecoride/public/assets/uploads/" . htmlspecialchars($photo);
-  ?>
+      <?php
+      $photo = $_SESSION['user']['photo'] ?? 'default.png';
+      $avatarPath = "/ecoride/public/assets/uploads/" . htmlspecialchars($photo);
+      ?>
       <?php if (in_array('admin', $_SESSION['user']['roles'])): ?>
-        <a class="nav-links with-avatar" href="/ecoride/pages/admin.php"> <img src="<?= $avatarPath ?>" alt="avatar" class="avatar">Admin</a>
-      <?php else: ?>
-        <a class="nav-links with-avatar" href="/ecoride/pages/mon_espace.php"> <img src="<?= $avatarPath ?>" alt="avatar" class="avatar">Mon Espace</a>
+        <a class="nav-links with-avatar" href="/ecoride/pages/admin.php"> <img src="<?= $avatarPath ?>" alt="avatar"
+            class="avatar">Admin</a>
       <?php endif; ?>
       <?php if (in_array('employe', $_SESSION['user']['roles'])): ?>
-        <a class="nav-links with-avatar" href="/employe/avis.php"> <img src="<?= $avatarPath ?>" alt="avatar" class="avatar">Espace Employé</a>
+        <a class="nav-links with-avatar" href="/ecoride/pages/employe.php"> <img src="<?= $avatarPath ?>" alt="avatar"
+            class="avatar">Espace Employé</a>
       <?php endif; ?>
+
+      <?php if (!in_array('admin', $_SESSION['user']['roles']) && !in_array('employe', $_SESSION['user']['roles'])): ?>
+        <a class="nav-links with-avatar" href="/ecoride/pages/mon_espace.php">
+          <img src="<?= $avatarPath ?>" alt="avatar" class="avatar">Mon Espace
+        </a>
+      <?php endif; ?>
+
+
 
       <a class="nav-links with-avatar" href="/ecoride/pages/logout.php">Déconnexion</a>
     <?php endif; ?>

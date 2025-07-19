@@ -175,6 +175,59 @@ if (in_array('conducteur', $roles)) {
     <?php endif; ?>
     <a href="mes_reservations.php" class="btn">Voir mes réservations</a>
 
+    <hr>
+    <section style="margin-top: 2rem;">
+      <h3>Laisser un avis</h3>
+      <?php
+      // récupérer tous les conducteurs avec qui l'utilisateur a réellement voyagé sur un trajet terminé
+      
+            $stmt = $pdo->prepare("
+        SELECT DISTINCT u.id, u.pseudo
+        FROM users u
+        JOIN trajets t ON u.id = t.conducteur_id
+        JOIN reservations r ON r.trajet_id = t.id
+        WHERE r.passager_id = ?
+          AND r.statut = 'confirmee'
+          AND t.date_depart < NOW()
+      ");
+      $stmt->execute([$user_id]);
+      $conducteurs = $stmt->fetchAll();
+      ?>
+
+      <form method="POST" action="ajouter_avis.php">
+        <label>Conducteur :
+          <select name="conducteur_id" required>
+            <option value="">-- Sélectionner --</option>
+            <?php foreach ($conducteurs as $c): ?>
+              <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['pseudo']) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </label><br><br>
+
+        <label>Note :
+          <select name="note" required>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Bien</option>
+            <option value="3">3 - Correct</option>
+            <option value="2">2 - Moyen</option>
+            <option value="1">1 - Mauvais</option>
+          </select>
+        </label><br><br>
+
+        <label>Commentaire :<br>
+          <textarea name="commentaire" rows="4" cols="50" required></textarea>
+        </label><br><br>
+
+        <button type="submit" class="btn">Envoyer l'avis</button>
+      </form>
+      <?php if (isset($_GET['success']) && $_GET['success'] === 'avis'): ?>
+        <p style="color: green;">Merci pour votre avis ! Il sera modéré prochainement.</p>
+      <?php elseif (isset($_GET['error']) && $_GET['error'] === 'champ'): ?>
+        <p style="color: red;">Veuillez remplir tous les champs.</p>
+      <?php endif; ?>
+
+    </section>
+
   </main>
 
   <?php include '../includes/footer.php'; ?>

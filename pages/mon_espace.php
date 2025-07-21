@@ -65,7 +65,9 @@ if (in_array('conducteur', $roles)) {
 <head>
   <meta charset="UTF-8">
   <title>Mon Espace - EcoRide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../public/assets/css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -181,7 +183,7 @@ if (in_array('conducteur', $roles)) {
       <?php
       // récupérer tous les conducteurs avec qui l'utilisateur a réellement voyagé sur un trajet terminé
       
-            $stmt = $pdo->prepare("
+      $stmt = $pdo->prepare("
         SELECT DISTINCT u.id, u.pseudo
         FROM users u
         JOIN trajets t ON u.id = t.conducteur_id

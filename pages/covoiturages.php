@@ -30,14 +30,12 @@ if ($filtre === 'prixmin') {
   $sqlMinPrix = "SELECT MIN(prix) FROM trajets 
                 WHERE ville_depart = :depart 
                 AND ville_arrivee = :destination 
-                --  AND DATE(date_depart) = :date 
                 AND DATE(date_depart) >= CURDATE()
                 AND places_dispo >= :passager";
   $stmtMinPrix = $pdo->prepare($sqlMinPrix);
   $stmtMinPrix->execute([
     'depart' => $depart,
     'destination' => $destination,
-    'date' => $date,
     'passager' => $passager
   ]);
   $prixMin = $stmtMinPrix->fetchColumn();
@@ -53,7 +51,6 @@ if ($filtre === 'prixmax') {
   $stmtMaxPrix->execute([
     'depart' => $depart,
     'destination' => $destination,
-    'date' => $date,
     'passager' => $passager
   ]);
   $prixMax = $stmtMaxPrix->fetchColumn();
@@ -149,6 +146,8 @@ if (!empty($conducteursIds)) {
   <link rel="stylesheet" href="../public/assets/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
 </head>
 
 <body>
@@ -157,13 +156,21 @@ if (!empty($conducteursIds)) {
   <main>
     <section class="hero">
       <img src="../public/assets/images/hero.jpg" alt="EcoRide Image de fond">
-      <h1>Economie + ecologi + convivalite = covoiturage</h1>
 
+      <h1>
+        <span class="desktop-only text-outline">Economie + ecologi + convivalite = covoiturage</span>
+
+        <div class="mobile-only banner-text">
+          <div class="text-top-right">Covoiturage</div>
+          <div class="text-bottom-left">+trajet</div>
+        </div>
+
+      </h1>
     </section>
 
     <section class="search">
-      <h2>Recherche d’un trajet</h2>
-      <form action="../pages/covoiturages.php" method="get" class="search-form">
+      <h2 class="desktop-only h2-bienvenue">Recherche d’un trajet</h2>
+      <form action="../pages/covoiturages.php" method="get" class="search-form desktop-only-form-covoiturages">
 
         <div class="option-group">
           <label class="radio-inline">
@@ -214,18 +221,45 @@ if (!empty($conducteursIds)) {
       </form>
     </section>
 
-    <hr>
+    <!-- version MOBILE -->
+    <form class="mobile-inline-form  mobile-only" action="../pages/covoiturages.php" method="get">
+      <i data-lucide="circle" class="icon-city"></i>
+      <select name="depart">
+        <option value="">Départ</option>
+        <?php foreach ($villesDepart as $ville): ?>
+          <option value="<?= htmlspecialchars($ville) ?>" <?= $ville === $depart ? 'selected' : '' ?>>
+            <?= htmlspecialchars($ville) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+      <span class="arrow-icon" data-lucide="arrow-left-right"></span>
+      <i data-lucide="circle" class="icon-city"></i>
+      <select name="destination">
+        <option value="">Destination</option>
+        <?php foreach ($villesArrivee as $ville): ?>
+          <option value="<?= htmlspecialchars($ville) ?>" <?= $ville === $destination ? 'selected' : '' ?>>
+            <?= htmlspecialchars($ville) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
 
-    <section>
+      <input type="hidden" name="type" value="mobile" />
+
+      <button type="submit">Rechercher</button>
+    </form>
+    <hr class="desktope-only">
+
+    <section>    
+      <h3 class="h3_covoiturage  ">Trier par</h3> 
       <form method="get" class="filtre-form">
-        <div class="filters">
-          <h3 class="h3_covoitutage">Trier par</h3>
 
+        <div class="filters">
+                                 
           <label><input type="radio" name="filtre" value="ecologique" <?= $filtre === 'ecologique' ? 'checked' : '' ?>>
             Écologique</label>
           <label><input type="radio" name="filtre" value="prixmax" <?= $filtre === 'prixmax' ? 'checked' : '' ?>> Prix max
             €</label>
-          <label><input type="radio" name="filtre" value="prixmin" <?= $filtre === 'prixmin' ? 'checked' : '' ?>> Prix min
+          <label class="desktop-only"><input type="radio" name="filtre" value="prixmin" <?= $filtre === 'prixmin' ? 'checked' : '' ?>> Prix min
             €</label>
           <label><input type="radio" name="filtre" value="duree" <?= $filtre === 'duree' ? 'checked' : '' ?>> Durée min
             h</label>
@@ -242,7 +276,7 @@ if (!empty($conducteursIds)) {
       </form>
     </section>
 
-    <h3 class="h3_covoitutage"> Trajets trouves</h3>
+    <h3 class="h3_covoiturage"> Trajets trouves</h3>
 
     <p class="results-header">
       <?= $date ? date('d/m/Y', strtotime($date)) : "Aujourd'hui" ?>
@@ -291,7 +325,7 @@ if (!empty($conducteursIds)) {
             </div>
           </div>
 
-          <div class="trajet-card-bottom">
+          <div class="trajet-card-bottom desktop-only">
             <?php $note = $trajet['conducteur_note'] ?? '–'; ?>
             <?php $notes = $trajet['notes'] ?? []; ?>
 
@@ -307,6 +341,7 @@ if (!empty($conducteursIds)) {
             <?php endif; ?>
             <a href="details.php?id=<?= $trajet['id'] ?>" class="btn details-btn">DETAILS</a>
           </div>
+           <a href="details.php?id=<?= $trajet['id'] ?>" class="btn details-btn mobile-only">DETAILS</a>
         </div>
 
 
@@ -324,6 +359,10 @@ if (!empty($conducteursIds)) {
 
     <script src="../public/assets/js/form-error-checker.js"></script>
     <?php include_once '../includes/footer.php'; ?>
+    <script>
+      lucide.createIcons();
+    </script>
 
 </body>
+
 </html>

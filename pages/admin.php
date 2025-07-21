@@ -44,6 +44,7 @@ $creditsData = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // [ '2025-07-10' => 4, ...
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <link rel="stylesheet" href="../public/assets/css/style.css">
     <link rel="stylesheet" href="../public/assets/css/admin.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -62,7 +63,6 @@ $creditsData = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // [ '2025-07-10' => 4, ...
 
             <!-- section création employé -->
             <section>
-                <h3>Créer un employé</h3>
                 <div class="section-toggle" onclick="toggleSection('createEmp')"><i data-lucide="user-plus"></i> Créer
                     un
                     employé</div>

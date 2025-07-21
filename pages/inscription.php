@@ -83,6 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
   <meta charset="UTF-8">
   <title>Inscription</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../public/assets/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -106,19 +107,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <?php endif; ?>
 
     <form method="POST">
-      <label>Pseudo :
+      <label class="label-inscription">Pseudo :
         <input type="text" name="pseudo" required>
       </label>
 
-      <label>Email :
+      <label class="label-inscription">Email :
         <input type="email" name="email" required>
       </label>
 
-      <label>Mot de passe :
+      <label class="label-inscription">Mot de passe :
         <input type="password" name="password" required>
       </label>
 
-      <label>Confirmer mot de passe :
+      <label class="label-inscription-last">Confirmer mot de passe :
         <input type="password" name="confirm_password" required>
       </label>
       <div class="checkbox">
@@ -153,6 +154,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <button type="submit" class="btn">Créer un compte</button>
   </div>
   </form>
+  <br>
+  <hr>
+  <div class="connexion-lien">
+    <span>Déjà inscrit ?</span>
+    <a href="connexion.php" class="btn-lien">Se connecter</a>
+  </div>
+  <br>
 
 </main>
 

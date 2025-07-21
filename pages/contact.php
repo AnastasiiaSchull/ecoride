@@ -18,6 +18,22 @@
             <h3>À propos du développeur</h3>
             <p>Développé par <strong>Anastasiia Schull</strong>, développeuse web en formation chez Studi.</p>
             <p>Compétences : HTML, CSS, JavaScript, PHP, MySQL, Figma, MongoDB, Git, Jira</p>
+            <div class="liens-projet">
+                <p>
+                    🔗 <strong>Projet GitHub :</strong>
+                    <a href="https://github.com/AnastasiaSchull/ecoride"
+                        target="_blank">https://github.com/AnastasiaSchull/ecoride</a>
+                </p>
+                <p>
+                    🎨 <strong>Maquettes Figma :</strong>
+                    <a href="
+                    https://www.figma.com/design/IsiAZjrXlyXuE2cKIvvblP/EcoRide?node-id=0-1&t=8EigJvzm0LJZAeKt-1
+                    " target="_blank">
+                        https://www.figma.com/design/IsiAZjrXlyXuE2cKIvvblP/EcoRide?node-id=0-1&t=8EigJvzm0LJZAeKt-1
+                    </a>
+                </p>
+            </div>
+
         </section>
 
         <div class="container">

@@ -48,7 +48,7 @@ if (!$trajet) {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -116,20 +116,21 @@ if (!$trajet) {
   <?php include_once '../includes/footer.php'; ?>
 
   <script>
-  function confirmReservation() {
-    Swal.fire({
-      title: 'Confirmer la réservation ?',
-      text: 'Ce trajet vous coûtera 1 crédit.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Oui, je confirme',
-      cancelButtonText: 'Annuler'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        document.getElementById('reserveForm').submit();
-      }
-    });
-  }
-</script>
+    function confirmReservation() {
+      Swal.fire({
+        title: 'Confirmer la réservation ?',
+        text: 'Ce trajet vous coûtera 1 crédit.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, je confirme',
+        cancelButtonText: 'Annuler'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('reserveForm').submit();
+        }
+      });
+    }
+  </script>
 </body>
+
 </html>

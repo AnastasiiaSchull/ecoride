@@ -1,6 +1,15 @@
 <?php session_start(); ?>
 <?php
-require_once __DIR__ . '../../config/db.php';
+require_once __DIR__ . '/../config/db.php';
+
+// Afficher toutes les tables de la base de données
+// $stmt = $pdo->query("SHOW TABLES");
+// $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+// echo "<pre>";
+// print_r($tables);
+// echo "</pre>";
+
+
 $sql = "SELECT DISTINCT ville_depart FROM trajets";
 $villesDepart = $pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
 

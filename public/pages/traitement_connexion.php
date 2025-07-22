@@ -3,7 +3,7 @@ session_start();
 
 require_once __DIR__ . '/../../config/db.php';
  // connexion à la base de données
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '../../../vendor/autoload.php';
  // chargement des bibliothèques (MongoDB incluse)
 use MongoDB\Client;
 use MongoDB\BSON\UTCDateTime;
@@ -45,7 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // -----------------------------
         try {
             // $mongo = new MongoDB\Client("mongodb://localhost:27017");
-             $mongo = new MongoDB\Client("mongodb://mongo:27017");
+            // $mongo = new MongoDB\Client("mongodb://mongo:27017");
+            $mongo = new MongoDB\Client("mongodb://admin:password@ecoride-mongo.internal:27017");
+
             $collection = $mongo->ecoride->login_history;
 
             $collection->insertOne([
@@ -69,7 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Tentative de connexion échouée — on peut aussi la logguer dans MongoDB
         try {
             // $mongo = new MongoDB\Client("mongodb://localhost:27017");
-            $mongo = new MongoDB\Client("mongodb://mongo:27017");
+            // $mongo = new MongoDB\Client("mongodb://mongo:27017");
+            $mongo = new MongoDB\Client("mongodb://admin:password@ecoride-mongo.internal:27017");
 
             $collection = $mongo->ecoride->login_history;
 

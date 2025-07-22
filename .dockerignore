@@ -4,7 +4,7 @@ mongo-data/
 
 # Node / PHP / Composer / IDE
 node_modules/
-vendor/
+# vendor/
 .vscode/
 .idea/
 
@@ -19,3 +19,10 @@ Thumbs.db
 *.tar
 *.7z
 *.bak
+
+.git
+docker-compose.yml
+*.log
+node_modules
+mongo-data
+mysql-data

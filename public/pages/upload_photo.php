@@ -12,7 +12,8 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
-    $targetDir = '/assets/uploads/';
+    // $targetDir = '/assets/uploads/';
+    $targetDir = __DIR__ . '/../assets/uploads/';
     $fileName = basename($_FILES['photo']['name']);
     $filePath = $targetDir . $fileName;
     $fileType = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));

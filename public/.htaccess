@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /
+
+#  Autoriser l'accès à tous les fichiers et dossiers existants
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+#  Tout le reste vers index.php
+RewriteRule ^ index.php [QSA,L]

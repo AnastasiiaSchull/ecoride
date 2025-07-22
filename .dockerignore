@@ -1,0 +1,21 @@
+# Ignorer les dossiers de données de MySQL et MongoDB
+mysql-data/
+mongo-data/
+
+# Node / PHP / Composer / IDE
+node_modules/
+vendor/
+.vscode/
+.idea/
+
+# Fichiers temporaires et systèmes
+*.log
+*.env
+.DS_Store
+Thumbs.db
+*.zip
+*.rar
+*.exe
+*.tar
+*.7z
+*.bak

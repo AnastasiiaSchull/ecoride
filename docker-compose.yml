@@ -13,16 +13,29 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
-      - db_data:/var/lib/mysql
+      - ./mysql-data:/var/lib/mysql  
+
   mongo:
     image: mongo:latest
     container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - ./mongo-data:/data/db
-      
-volumes:
-  db_data:
+      - ./mongo-data:/data/db        
+
+  php-apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ecoride-php-apache:latest
+    container_name: ecoride-app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mysql
+      - mongo
+
 # сela crée un conteneur avec MongoDB, expose le port 27017 et enregistre les données dans le dossier mongo-data
 # docker-compose up -d

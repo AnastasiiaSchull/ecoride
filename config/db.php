@@ -1,8 +1,9 @@
 <?php
-$host = 'localhost';
-$dbname = 'ecoride';
-$user = 'user'; // celui défini dans docker-compose.yml
-$password = 'password';
+// $host = getenv('DB_HOST') ?: 'localhost';
+$host = getenv('DB_HOST') ?: 'mysql';
+$dbname = getenv('MYSQL_DATABASE') ?: 'ecoride';
+$user = getenv('MYSQL_USER') ?: 'user';// celui défini dans docker-compose.yml
+$password = getenv('MYSQL_PASSWORD') ?: 'password';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);

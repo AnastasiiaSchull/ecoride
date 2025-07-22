@@ -15,3 +15,24 @@ mongo-data/
 # Fichiers système (OS)
 .DS_Store
 Thumbs.db
+
+# MySQL
+mysql-data/
+
+
+# .dockerignore
+
+.git
+.gitignore
+vendor
+node_modules
+*.log
+*.env
+*.zip
+*.rar
+*.exe
+*.tar
+*.7z
+*.bak
+.DS_Store
+Thumbs.db

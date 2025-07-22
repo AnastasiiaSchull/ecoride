@@ -1,6 +1,6 @@
 <?php session_start(); ?>
 <?php
-require_once '../config/db.php';
+require_once __DIR__ . '../../config/db.php';
 $sql = "SELECT DISTINCT ville_depart FROM trajets";
 $villesDepart = $pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
 
@@ -25,24 +25,25 @@ $trajetsAVenir = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion - EcoRide</title>
-  <link rel="stylesheet" href="../public/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 
 <body>
-  <?php include_once '../includes/header.php'; ?>
+  <?php include_once __DIR__ . '/../includes/header.php'; ?>
+
 
   <main>
     <section class="hero">
-      <img src="assets/images/hero.jpg" alt="EcoRide Image de fond">
+      <img src="/assets/images/hero.jpg" alt="EcoRide Image de fond">
       <h1 class="desktop-only text-outline">Bienvenue chez EcoRide</h1>
       <h1 class="mobile-only text-outline">Eco-Covoiturage</h1>
     </section>
 
     <section class="search">
       <h2 class="h2-bienvenue">Recherche d’un trajet</h2>
-      <form action="../pages/covoiturages.php" method="get" class="search-form">
+      <form action="/pages/covoiturages.php" method="get" class="search-form">
 
         <div class="option-group">
           <label class="radio-inline">
@@ -100,7 +101,7 @@ $trajetsAVenir = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
       <div class="trajets hidden" id="trajet-list">
         <?php foreach ($trajetsAVenir as $trajet): ?>
           <a class="trajet"
-            href="../pages/covoiturages.php?depart=<?= urlencode($trajet['ville_depart']) ?>&destination=<?= urlencode($trajet['ville_arrivee']) ?>&date=<?= date('Y-m-d', strtotime($trajet['prochaine_date'])) ?>&passager=1">
+            href="/pages/covoiturages.php?depart=<?= urlencode($trajet['ville_depart']) ?>&destination=<?= urlencode($trajet['ville_arrivee']) ?>&date=<?= date('Y-m-d', strtotime($trajet['prochaine_date'])) ?>&passager=1">
             <?= htmlspecialchars($trajet['ville_depart']) ?> → <?= htmlspecialchars($trajet['ville_arrivee']) ?>
           </a>
         <?php endforeach; ?>
@@ -110,8 +111,8 @@ $trajetsAVenir = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     
   </main>
 
-  <script src="../public/assets/js/covoiturage-datepicker.js"></script>
-  <script src="../public/assets/js/form-error-checker.js"></script>
+  <script src="/assets/js/covoiturage-datepicker.js"></script>
+  <script src="/assets/js/form-error-checker.js"></script>
 
   <script>
     const toggleBtn = document.getElementById("toggle-trajets");
@@ -123,9 +124,10 @@ $trajetsAVenir = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     });
   </script>
 
-  <script src="../public/assets/js/toggle-selects.js"></script>
+  <script src="/assets/js/toggle-selects.js"></script>
 
-  <?php include_once '../includes/footer.php'; ?>
+  <?php include_once __DIR__ . '/../includes/footer.php'; ?>
+
 
 </body>
 

@@ -44,7 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // ID utilisateur, IP, navigateur, date et heure
         // -----------------------------
         try {
-            $mongo = new MongoDB\Client("mongodb://localhost:27017");
+            // $mongo = new MongoDB\Client("mongodb://localhost:27017");
+             $mongo = new MongoDB\Client("mongodb://mongo:27017");
             $collection = $mongo->ecoride->login_history;
 
             $collection->insertOne([
@@ -67,7 +68,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Tentative de connexion échouée — on peut aussi la logguer dans MongoDB
         try {
-            $mongo = new MongoDB\Client("mongodb://localhost:27017");
+            // $mongo = new MongoDB\Client("mongodb://localhost:27017");
+            $mongo = new MongoDB\Client("mongodb://mongo:27017");
+
             $collection = $mongo->ecoride->login_history;
 
             $collection->insertOne([

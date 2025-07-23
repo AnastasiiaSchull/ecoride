@@ -39,7 +39,7 @@ $roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
   </form>
 </main>
 
-<?php include_once __DIR__ . '/../includes/footer.php';?>
+<?php include_once __DIR__ . '/../../includes/footer.php';?>
 
 </body>
 </html>

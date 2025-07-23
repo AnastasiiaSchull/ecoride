@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p><a href="mon_espace.php">Retour à mon espace</a></p>
 </main>
 
-<?php include_once __DIR__ . '/../includes/footer.php';
+<?php include_once __DIR__ . '/../../includes/footer.php';
  ?>
 
 </body>

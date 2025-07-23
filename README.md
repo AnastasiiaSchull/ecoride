@@ -33,7 +33,11 @@ Développer une application web responsive pour promouvoir le covoiturage et ré
 - **MySQL** : gère les données principales du système (utilisateurs, trajets, véhicules, réservations, crédits, etc.)
 - **MongoDB** : utilisée pour :
   - Sauvegarder les **connexions et logs des utilisateurs**
+ 
+##  Charte Graphique & Maquettes
 
+ [Télécharger la Charte Graphique (PDF)](./Charte%20Graphique.pdf)  
+ [Voir les maquettes sur Figma](https://www.figma.com/design/IsiAZjrXlyXuE2cKIvvblP/EcoRide?node-id=0-1&t=8EigJvzm0LJZAeKt-1)
 
 
 

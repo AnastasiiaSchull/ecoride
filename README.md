@@ -12,6 +12,7 @@ Développer une application web responsive pour promouvoir le covoiturage et ré
 - **Front-end** : HTML5, CSS3 (Bootstrap), JavaScript
 - **Back-end** : PHP avec PDO
 - **Base de données relationnelle** : MySQL
+- **Base de données NoSQL** : MongoDB (utilisée pour le logging des connexions utilisateurs)
 - **Déploiement envisagé** : l’hébergement sera effectué sur une plateforme comme Vercel, Fly.io ou Heroku selon la compatibilité et les besoins techniques.
 - **Gestion de projet** : Jira
 
@@ -27,7 +28,11 @@ Développer une application web responsive pour promouvoir le covoiturage et ré
 - Historique, démarrage/arrêt du covoiturage
 - Espace employé et admin (avis, statistiques, gestion des comptes)
 
+## Structure des bases de données
 
+- **MySQL** : gère les données principales du système (utilisateurs, trajets, véhicules, réservations, crédits, etc.)
+- **MongoDB** : utilisée pour :
+  - Sauvegarder les **connexions et logs des utilisateurs**
 
 
 

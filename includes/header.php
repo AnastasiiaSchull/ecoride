@@ -41,7 +41,7 @@
   <?php else: ?>
     <?php
       $photo = $_SESSION['user']['photo'] ?? 'default.png';
-      $avatarPath = "/assets/uploads/" . htmlspecialchars($photo);
+      $avatarPath = "/assets/uploads/" . htmlspecialchars($photo). '?v=' . time();
 
       if (in_array('admin', $_SESSION['user']['roles'])) {
         $userLink = '/pages/admin.php';

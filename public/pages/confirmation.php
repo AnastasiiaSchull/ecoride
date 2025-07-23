@@ -6,7 +6,7 @@ session_start();
 <head>
   <meta charset="UTF-8">
   <title>Confirmation de réservation</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>

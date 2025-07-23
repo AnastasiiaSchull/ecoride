@@ -15,6 +15,7 @@ $user_id = $_SESSION['user_id'];
 $ville_depart = trim($_POST['ville_depart'] ?? '');
 $ville_arrivee = trim($_POST['ville_arrivee'] ?? '');
 $date_depart = $_POST['date_depart'] ?? '';
+$date_arrivee = $_POST['date_arrivee'] ?? '';
 $prix = $_POST['prix'] ?? '';
 $vehicule_id = $_POST['vehicule_id'] ?? '';
 
@@ -42,25 +43,53 @@ if (!empty($errors)) {
     exit;
 }
 
-// récupérer le type d'énergie du véhicule pour définir si éco
-$stmt = $pdo->prepare("SELECT energie FROM vehicules WHERE id = ?");
+// Récupère les infos du véhicule
+$stmt = $pdo->prepare("SELECT energie, places FROM vehicules WHERE id = ?");
 $stmt->execute([$vehicule_id]);
-$energie = $stmt->fetchColumn();
+$vehicule = $stmt->fetch();
 
-$eco = ($energie === 'electrique') ? 1 : 0;
+if (!$vehicule) {
+    echo "Véhicule introuvable.";
+    exit;
+}
+
+$eco = ($vehicule['energie'] === 'electrique') ? 1 : 0;
+$places_dispo = (int)$vehicule['places'];
+// récupérer le type d'énergie du véhicule pour définir si éco
+// $stmt = $pdo->prepare("SELECT energie FROM vehicules WHERE id = ?");
+// $stmt->execute([$vehicule_id]);
+// $energie = $stmt->fetchColumn();
+
+// $eco = ($energie === 'electrique') ? 1 : 0;
 
 
-// insérer le trajet
+// Insère le trajet
 $stmt = $pdo->prepare("
-    INSERT INTO trajets (ville_depart, ville_arrivee, date_depart, prix, conducteur_id, vehicule_id, statut, eco)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO trajets (conducteur_id, vehicule_id, ville_depart, ville_arrivee, date_depart, date_arrivee, prix, places_dispo, eco, statut)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
-$stmt->execute([$ville_depart, $ville_arrivee, $date_depart, $prix, $user_id, $vehicule_id, 'à_venir', $eco]);
 
-$trajet_id = $pdo->lastInsertId();
+$stmt->execute([
+    $user_id,
+    $vehicule_id,
+    $ville_depart,
+    $ville_arrivee,
+    $date_depart,
+    $date_arrivee,
+    $prix,
+    $places_dispo,
+    $eco,
+    'à_venir'
+]);
+
 
 // récupération de l'id du trajet inséré
 $trajet_id = $pdo->lastInsertId();
+
+// echo "<pre>";
+// echo "DATE DEPART : $date_depart\n";
+// echo "DATE ARRIVEE : $date_arrivee\n";
+// echo "</pre>";
 
 // insérer les préférences (si sélectionnées)
 $stmt = $pdo->prepare("

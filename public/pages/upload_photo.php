@@ -30,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
         // sauvegarde dans la BDD
         $stmt = $pdo->prepare("UPDATE users SET photo = ? WHERE id = ?");
         $stmt->execute([$fileName, $userId]);
+
+        $_SESSION['user']['photo'] = $fileName;
+
         header("Location: mon_espace.php"); 
         exit;
     } else {

@@ -90,7 +90,10 @@ if (!$trajet) {
         <hr>
         <h3>Avis des passagers</h3>
         <?php
-        $commentaires = explode('||', $trajet['commentaires']);
+        $commentaires = [];
+        if (!empty($trajet['commentaires'])) {
+          $commentaires = explode('||', $trajet['commentaires']);
+        }
         foreach ($commentaires as $commentaire) {
           if (trim($commentaire)) {
             echo "<p>💬 " . htmlspecialchars($commentaire) . "</p>";
@@ -114,7 +117,7 @@ if (!$trajet) {
     </section>
 
   </main>
- <?php include_once __DIR__ . '/../../includes/footer.php'; ?>
+  <?php include_once __DIR__ . '/../../includes/footer.php'; ?>
 
   <script>
     function confirmReservation() {

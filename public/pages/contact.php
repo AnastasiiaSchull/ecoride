@@ -39,9 +39,9 @@
         <div class="container">
             <p style="margin-top: 1rem; color: #888; text-align: center;">
                 <strong>Infos de test :</strong><br>
-                Admin -> <code>admin@agora.com</code> / <code>admin</code><br>
+                Admin -> <code>admin@gmail.com</code> / <code>admin</code><br>
                 Employé -> <code>employe1@gmail.com</code> / <code>motdepasse</code><br>
-                User -> <code>lucas.durand@gmail.com</code> / <code>motdepasse</code>
+                User -> <code>schull@gmail.com</code> / <code>motdepasse</code>
             </p>
         </div>
     </main>

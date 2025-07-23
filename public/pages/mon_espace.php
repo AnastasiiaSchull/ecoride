@@ -97,8 +97,7 @@ if (in_array('conducteur', $roles)) {
           <h3>Photo de profil</h3>
 
           <?php if (!empty($user['photo'])): ?>
-            <img src="/assets/uploads/<?= htmlspecialchars($user['photo']) ?>" alt="Photo du conducteur"
-              class="avatar">
+            <img src="/assets/uploads/<?= htmlspecialchars($user['photo']) ?>" alt="Photo du conducteur" class="avatar">
           <?php endif; ?>
           <hr>
           <form action="upload_photo.php" method="post" enctype="multipart/form-data">
@@ -177,6 +176,10 @@ if (in_array('conducteur', $roles)) {
     <?php if (in_array('conducteur', $roles)): ?>
       <a href="mes_trajets.php" class="btn">Gérer mes trajets</a>
     <?php endif; ?>
+    <?php if (in_array('conducteur', $roles)): ?>
+      <a href="creer_trajet.php" class="btn">Créer un trajet</a>
+    <?php endif; ?>
+
     <a href="mes_reservations.php" class="btn">Voir mes réservations</a>
 
     <hr>
@@ -234,7 +237,7 @@ if (in_array('conducteur', $roles)) {
 
   </main>
 
-   <?php include_once __DIR__ . '/../../includes/footer.php'; ?>
+  <?php include_once __DIR__ . '/../../includes/footer.php'; ?>
 </body>
 
 </html>

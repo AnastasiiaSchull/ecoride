@@ -8,3 +8,8 @@ RewriteRule ^ - [L]
 
 #  Tout le reste vers index.php
 RewriteRule ^ index.php [QSA,L]
+
+# Limites de téléversement PHP
+php_value upload_max_filesize 10M
+php_value post_max_size 12M
+php_value memory_limit 128M

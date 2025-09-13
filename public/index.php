@@ -1,143 +1,114 @@
-<?php session_start(); ?>
 <?php
-require_once __DIR__ . '/../config/db.php';
+session_start();
+define('ROOT', dirname(__DIR__));
+$pdo = require ROOT . '/config/db.php';
 
-// Afficher toutes les tables de la base de données
-// $stmt = $pdo->query("SHOW TABLES");
-// $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-// echo "<pre>";
-// print_r($tables);
-// echo "</pre>";
+$autoload = ROOT . '/vendor/autoload.php';
+if (file_exists($autoload)) { require $autoload; }
 
+// d'abord, on récupère le chemin
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 
-$sql = "SELECT DISTINCT ville_depart FROM trajets";
-$villesDepart = $pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+// 2) Подключаем контроллеры, которые будем дергать
+require_once ROOT.'/app/Controllers/HomeController.php';
+require_once ROOT.'/app/Controllers/AuthController.php';
+require_once ROOT.'/app/Controllers/AdminController.php';
+require_once ROOT.'/app/Controllers/CovoiturageController.php';
+require_once ROOT.'/app/Controllers/ReservationController.php';
+require_once ROOT.'/app/Controllers/TrajetController.php';
+require_once ROOT.'/app/Controllers/ApiController.php';
+require_once ROOT.'/app/Controllers/ProfileController.php';
+require_once ROOT.'/app/Controllers/PageController.php';
+require_once ROOT.'/app/Controllers/RoleController.php';
+require_once ROOT.'/app/Controllers/VehicleController.php';
+require_once ROOT.'/app/Controllers/EmployeController.php';
+require_once ROOT.'/app/Controllers/AvisController.php';
 
-$sql = "SELECT DISTINCT ville_arrivee FROM trajets";
-$villesArrivee = $pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+// créer les instances
+$home  = new HomeController($pdo);
+$auth  = new AuthController($pdo);
+$admin = new AdminController($pdo);
+$cov   = new CovoiturageController($pdo);
+$res   = new ReservationController($pdo);
+$traj  = new TrajetController($pdo);
+$api   = new ApiController($pdo);
+$prof  = new ProfileController($pdo);
+$pages = new PageController($pdo);
+$role = new RoleController($pdo);
+$veh = new VehicleController($pdo);
+$emp = new EmployeController($pdo);
+$avis = new AvisController($pdo);
 
-// obtenir les 3 trajets les plus proches
-$sql = "SELECT ville_depart, ville_arrivee, MIN(date_depart) as prochaine_date
-        FROM trajets
-        WHERE date_depart >= CURDATE()
-        GROUP BY ville_depart, ville_arrivee
-        ORDER BY prochaine_date ASC
-        LIMIT 3";
-$trajetsAVenir = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+// routage
 
-?>
+// home
+if ($path === '/' || $path === '/home') { $home->index(); exit; }
 
-<!DOCTYPE html>
-<html lang="fr">
+// recherche / création de trajet
+if ($path === '/covoiturages') { $cov->search(); exit; }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - EcoRide</title>
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-</head>
+// reservations
+if ($path === '/reservations'     && $_SERVER['REQUEST_METHOD'] === 'POST') { $res->create(); exit; }
+if ($path === '/mes_reservations' && $_SERVER['REQUEST_METHOD'] === 'GET')  { $res->my(); exit; }
+if ($path === '/confirmation'     && $_SERVER['REQUEST_METHOD'] === 'GET')  { $res->confirmation(); exit; }
 
-<body>
-  <?php include_once __DIR__ . '/../includes/header.php'; ?>
+// details
+if ($path === '/trajets/details') { $traj->details(); exit; }
 
+// API для AJAX
+if ($path === '/api/trajets/dates')        { $api->dates(); exit; }
+if ($path === '/api/trajets/departs')      { $api->departs(); exit; }
+if ($path === '/api/trajets/destinations') { $api->destinations(); exit; }
+if ($path === '/api/trajets/places')       { $api->places(); exit; }
 
-  <main>
-    <section class="hero">
-      <img src="/assets/images/hero.jpg" alt="EcoRide Image de fond">
-      <h1 class="desktop-only text-outline">Bienvenue chez EcoRide</h1>
-      <h1 class="mobile-only text-outline">Eco-Covoiturage</h1>
-    </section>
+// Auth
+if ($path === '/connexion'   && $_SERVER['REQUEST_METHOD'] === 'GET')  { $auth->loginForm();    exit; }
+if ($path === '/connexion'   && $_SERVER['REQUEST_METHOD'] === 'POST') { $auth->login();        exit; }
+if ($path === '/inscription' && $_SERVER['REQUEST_METHOD'] === 'GET')  { $auth->registerForm(); exit; }
+if ($path === '/inscription' && $_SERVER['REQUEST_METHOD'] === 'POST') { $auth->register();     exit; }
+if ($path === '/logout') { $auth->logout(); exit; }
 
-    <section class="search">
-      <h2 class="h2-bienvenue">Recherche d’un trajet</h2>
-      <form action="/pages/covoiturages.php" method="get" class="search-form">
+// Admin
+if ($path === '/admin'            && $_SERVER['REQUEST_METHOD'] === 'GET')  { $admin->dashboard(); exit; }
+if ($path === '/admin/suspend'    && $_SERVER['REQUEST_METHOD'] === 'POST') { $admin->suspend();   exit; }
+if ($path === '/admin/restore'    && $_SERVER['REQUEST_METHOD'] === 'POST') { $admin->restore();   exit; }
+if ($path === '/admin/employes'    && $_SERVER['REQUEST_METHOD']==='POST') { $admin->createEmployee(); exit; }
 
-        <div class="option-group">
-          <label class="radio-inline">
-            <input type="radio" name="type" value="depart" id="radio-depart" checked> Départ
-          </label>
-          <i class="bi bi-caret-down-fill icon-toggle" data-target="select-depart"></i>
-          <select name="depart" id="select-depart" class="hide">
-            <option value="">Choisir une ville</option>
-            <?php foreach ($villesDepart as $ville): ?>
-              <option value="<?= htmlspecialchars($ville) ?>"><?= htmlspecialchars($ville) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
+if ($path === '/employe'             && $_SERVER['REQUEST_METHOD']==='GET')  { $emp->dashboard();    exit; }
+if ($path === '/employe/dashboard'  && $_SERVER['REQUEST_METHOD'] === 'GET') { $emp->dashboard(); exit; } 
+if ($path === '/employe/moderation' && $_SERVER['REQUEST_METHOD'] === 'POST'){ $emp->moderate();  exit; }
 
-        <div class="option-group">
-          <label class="radio-inline">
-            <input type="radio" name="type" value="destination" id="radio-destination"> Destination
-          </label>
-          <i class="bi bi-caret-down-fill icon-toggle" data-target="select-destination"></i>
-          <select name="destination" id="select-destination" class="hide">
-            <option value="">Choisir une ville</option>
-            <?php foreach ($villesArrivee as $ville): ?>
-              <option value="<?= htmlspecialchars($ville) ?>"><?= htmlspecialchars($ville) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
+// profil
+if ($path === '/mon_espace' && $_SERVER['REQUEST_METHOD'] === 'GET') { 
+    $prof->dashboard(); 
+    exit; 
+}
+if ($path === '/profil/upload-photo' && $_SERVER['REQUEST_METHOD'] === 'POST') { $prof->uploadPhoto(); exit; }
+if ($path === '/contact' && $_SERVER['REQUEST_METHOD']==='GET') { $pages->contact(); exit; }
+if ($path === '/roles/edit' && $_SERVER['REQUEST_METHOD'] === 'GET')  { $role->edit();   exit; }
+if ($path === '/roles'      && $_SERVER['REQUEST_METHOD'] === 'POST') { $role->update(); exit; }
 
-        <div class="date-picker" id="custom-date-trigger">
-          <i class="bi bi-calendar4-week"></i>
-          <span id="date-label">Aujourd'hui</span>
-          <input type="hidden" name="date" id="real-date">
-          <div class="calendar-popup" id="calendar-popup" style="display:none;"></div>
-        </div>
+// trajets (conducteur)
+if ($path==='/mes_trajets'       && $_SERVER['REQUEST_METHOD']==='GET')  { $traj->mine(); exit; }
+if ($path==='/trajets/creer'     && $_SERVER['REQUEST_METHOD']==='GET')  { $traj->createForm(); exit; }
+if ($path==='/trajets'           && $_SERVER['REQUEST_METHOD']==='POST') { $traj->store(); exit; }
+if ($path==='/trajets/statut'    && $_SERVER['REQUEST_METHOD']==='POST') { $traj->updateStatus(); exit; }
 
+// reservations
+if ($path==='/mes_reservations'  && $_SERVER['REQUEST_METHOD']==='GET')  { $res->my(); exit; }
 
-        <div class="passager-block">
-          <i class="bi bi-person"></i>
-          <input type="number" name="passager" value="1" min="1" max="8" class="short-input" placeholder="Passagers">
-          <span>passager</span>
-          <div id="places-info" class="info-text"></div>
-        </div>
+// profile (credits + upload )
+if ($path==='/credits'           && $_SERVER['REQUEST_METHOD']==='GET')  { $prof->creditsForm(); exit; }
+if ($path==='/credits'           && $_SERVER['REQUEST_METHOD']==='POST') { $prof->creditsStore(); exit; }
 
-        <button type="submit">Rechercher</button>
-        <span id="form-error" class="error-message hidden">
-        </span>
+// vehicles
+if ($path==='/vehicules/creer' && $_SERVER['REQUEST_METHOD']==='GET')  { $veh->createForm(); exit; }
+if ($path==='/vehicules/creer' && $_SERVER['REQUEST_METHOD']==='POST') { $veh->store();      exit; }
 
-      </form>
-    </section>
-    <hr>
-    <section class="upcoming">
-      <h2>
-        Trajets à venir
-        <span class="arrow" id="toggle-trajets">▼</span>
-      </h2>
-      <div class="trajets hidden" id="trajet-list">
-        <?php foreach ($trajetsAVenir as $trajet): ?>
-          <a class="trajet"
-            href="/pages/covoiturages.php?depart=<?= urlencode($trajet['ville_depart']) ?>&destination=<?= urlencode($trajet['ville_arrivee']) ?>&date=<?= date('Y-m-d', strtotime($trajet['prochaine_date'])) ?>&passager=1">
-            <?= htmlspecialchars($trajet['ville_depart']) ?> → <?= htmlspecialchars($trajet['ville_arrivee']) ?>
-          </a>
-        <?php endforeach; ?>
-      </div>
+// avis
+if ($path === '/avis/nouveau' && $_SERVER['REQUEST_METHOD'] === 'GET')  { $avis->createForm(); exit; }
+if ($path === '/avis'         && $_SERVER['REQUEST_METHOD'] === 'POST') { $avis->store();      exit; }
 
-    </section>
-    
-  </main>
-
-  <script src="/assets/js/covoiturage-datepicker.js"></script>
-  <script src="/assets/js/form-error-checker.js"></script>
-
-  <script>
-    const toggleBtn = document.getElementById("toggle-trajets");
-    const trajetList = document.getElementById("trajet-list");
-
-    toggleBtn?.addEventListener("click", () => {
-      trajetList.classList.toggle("hidden");
-      toggleBtn.classList.toggle("rotated");
-    });
-  </script>
-
-  <script src="/assets/js/toggle-selects.js"></script>
-
-  <?php include_once __DIR__ . '/../includes/footer.php'; ?>
-
-
-</body>
-
-</html>
+http_response_code(404);
+echo '<h1>404</h1><p>Route introuvable.</p>';
+exit;

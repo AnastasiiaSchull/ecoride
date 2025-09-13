@@ -8,6 +8,10 @@ Ce projet a été réalisé dans le cadre du Titre Professionnel Développeur We
 
 Développer une application web responsive pour promouvoir le covoiturage et réduire l'empreinte écologique des déplacements.
 
+##  Architecture
+
+- **Pattern :** MVC (PHP)
+- **Couches :** Contrôleurs (logique), Modèles (accès aux données via PDO), Vues (rendu HTML)
 
 ##  Stack technique
 
@@ -17,7 +21,6 @@ Développer une application web responsive pour promouvoir le covoiturage et ré
 - **Base de données NoSQL** : MongoDB (utilisée pour le logging des connexions utilisateurs)
 - **Déploiement envisagé** : l’hébergement sera effectué sur une plateforme comme Vercel, Fly.io ou Heroku selon la compatibilité et les besoins techniques.
 - **Gestion de projet** : Jira
-
 
 ## Fonctionnalités principales
 
@@ -42,6 +45,22 @@ Développer une application web responsive pour promouvoir le covoiturage et ré
  [Voir les maquettes sur Figma](https://www.figma.com/design/IsiAZjrXlyXuE2cKIvvblP/EcoRide?node-id=0-1&t=8EigJvzm0LJZAeKt-1)
 
 
+- **Wireframes (PDF)** : [Voir les wireframes Excalidraw](https://1drv.ms/b/c/8fa343be0069556b/ETqKnRgc3-hLoNia1XI1MQoBt_KrPPemt19U_XhRQ2gRYQ?e=npIaDW)
 
+---
 
+## Déploiement local
 
+En local, j’utilise **Docker**. Il y a trois services :
+
+### Services Docker
+- `app` : PHP 8.2 + Apache (le site) — exposé sur **http://localhost:8080**  
+- `mysql` : base MySQL — port **3306**  
+- `mongodb` : base NoSQL pour les logs — port **27017**
+
+### Étapes
+1. **Cloner** le dépôt.  
+2. **Copier** `.env.example` → `.env` (laisser les valeurs par défaut ou adapter).  
+3. **Démarrer** :
+   ```bash
+   docker compose up -d --build

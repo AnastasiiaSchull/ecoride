@@ -2,6 +2,8 @@
 session_start();
 require_once __DIR__ . '/../../config/db.php';
 
+$_SESSION['flash_profile'] = "Photo mise à jour.";
+header('Location: /mon_espace');
 
 // vérifie que l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {

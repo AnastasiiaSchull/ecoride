@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>EcoRide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+  <?php include_once dirname(__DIR__,3) . '/includes/header.php'; ?>
+
+  <main>
+    <section class="hero">
+      <img src="/assets/images/hero.jpg" alt="EcoRide Image de fond">
+      <h1 class="desktop-only text-outline">Bienvenue chez EcoRide</h1>
+      <h1 class="mobile-only text-outline">Eco-Covoiturage</h1>
+    </section>
+
+    <section class="search">
+      <h2 class="h2-bienvenue">Recherche d’un trajet</h2>
+
+      <form action="/covoiturages" method="get" class="search-form">
+        <div class="option-group">
+          <label class="radio-inline">
+            <input type="radio" name="type" value="depart" id="radio-depart" checked> Départ
+          </label>
+          <i class="bi bi-caret-down-fill icon-toggle" data-target="select-depart"></i>
+          <select name="depart" id="select-depart" class="hide">
+            <option value="">Choisir une ville</option>
+            <?php foreach ($villesDepart as $ville): ?>
+              <option value="<?= htmlspecialchars($ville) ?>"><?= htmlspecialchars($ville) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label class="radio-inline">
+            <input type="radio" name="type" value="destination" id="radio-destination"> Destination
+          </label>
+          <i class="bi bi-caret-down-fill icon-toggle" data-target="select-destination"></i>
+          <select name="destination" id="select-destination" class="hide">
+            <option value="">Choisir une ville</option>
+            <?php foreach ($villesArrivee as $ville): ?>
+              <option value="<?= htmlspecialchars($ville) ?>"><?= htmlspecialchars($ville) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+
+        <div class="date-picker" id="custom-date-trigger">
+          <i class="bi bi-calendar4-week"></i>
+          <span id="date-label">Aujourd'hui</span>
+          <input type="hidden" name="date" id="real-date">
+          <div class="calendar-popup" id="calendar-popup" style="display:none;"></div>
+        </div>
+
+        <div class="passager-block">
+          <i class="bi bi-person"></i>
+          <input type="number" name="passager" value="1" min="1" max="8" class="short-input" placeholder="Passagers">
+          <span>passager</span>
+          <div id="places-info" class="info-text"></div>
+        </div>
+
+        <button type="submit">Rechercher</button>
+        <span id="form-error" class="error-message hidden"></span>
+      </form>
+    </section>
+
+    <hr>
+
+    <section class="upcoming">
+      <h2>
+        Trajets à venir
+        <span class="arrow" id="toggle-trajets">▼</span>
+      </h2>
+
+      <div class="trajets hidden" id="trajet-list">
+        <?php foreach ($trajetsAVenir as $t): ?>
+          <a class="trajet"
+             href="/covoiturages?depart=<?= urlencode($t['ville_depart']) ?>&destination=<?= urlencode($t['ville_arrivee']) ?>&date=<?= date('Y-m-d', strtotime($t['prochaine_date'])) ?>&passager=1">
+            <?= htmlspecialchars($t['ville_depart']) ?> → <?= htmlspecialchars($t['ville_arrivee']) ?>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/js/covoiturage-datepicker.js"></script>
+  <script src="/assets/js/form-error-checker.js"></script>
+  <script src="/assets/js/toggle-selects.js"></script>
+  <script>
+    const toggleBtn = document.getElementById("toggle-trajets");
+    const trajetList = document.getElementById("trajet-list");
+    toggleBtn?.addEventListener("click", () => {
+      trajetList.classList.toggle("hidden");
+      toggleBtn.classList.toggle("rotated");
+    });
+  </script>
+
+  <?php include_once dirname(__DIR__,3) . '/includes/footer.php'; ?>
+</body>
+</html>

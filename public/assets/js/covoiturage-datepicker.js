@@ -106,7 +106,7 @@
       const destinationSelect = document.getElementById('destination');
       const radios = document.getElementsByName('type');
 
-      // если выбрана Départ → загружаем destinations
+      // si sélectionné Départ - chargeons destinations
       departSelect.addEventListener('change', function () {
         if (document.querySelector('input[name="type"]:checked').value === 'depart') {
           const departVille = this.value;
@@ -129,7 +129,7 @@
         }
       });
 
-      // если выбрана Destination → загружаем departs
+      // si sélectionné Destination - chargeons departs
       destinationSelect.addEventListener('change', function () {
         if (document.querySelector('input[name="type"]:checked').value === 'destination') {
           const destinationVille = this.value;

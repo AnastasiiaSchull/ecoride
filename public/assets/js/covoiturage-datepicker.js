@@ -19,7 +19,8 @@
 
         if (!otherVille) return;
 
-        fetch(`../pages/get_dates.php?type=${type}&ville=${encodeURIComponent(ville)}&other=${encodeURIComponent(otherVille)}`)
+        fetch(`../pages/get_dates.php?type=${type}&ville=${encodeURIComponent(ville)}
+        &other=${encodeURIComponent(otherVille)}`)
           .then(response => response.json())
           .then(dates => {
             availableDates = dates;

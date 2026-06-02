@@ -77,8 +77,12 @@
       <div class="trajets hidden" id="trajet-list">
         <?php foreach ($trajetsAVenir as $t): ?>
           <a class="trajet"
-             href="/covoiturages?depart=<?= urlencode($t['ville_depart']) ?>&destination=<?= urlencode($t['ville_arrivee']) ?>&date=<?= date('Y-m-d', strtotime($t['prochaine_date'])) ?>&passager=1">
-            <?= htmlspecialchars($t['ville_depart']) ?> → <?= htmlspecialchars($t['ville_arrivee']) ?>
+             href="/covoiturages?depart=<?= urlencode($t['ville_depart']) 
+             ?>&destination=<?= urlencode($t['ville_arrivee']) 
+             ?>&date=<?= date('Y-m-d', strtotime($t['prochaine_date'])) 
+             ?>&passager=1">
+            <?= htmlspecialchars($t['ville_depart']) ?> → <?= htmlspecialchars($t['ville_arrivee']) 
+            ?>
           </a>
         <?php endforeach; ?>
       </div>

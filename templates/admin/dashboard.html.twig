@@ -1,0 +1,205 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid p-0">
+
+    {# HERO #}
+    <div class="mb-4">
+        <img src="{{ asset('images/hero.jpg') }}"
+             class="img-fluid w-100"
+             style="max-height: 300px; object-fit: cover;"
+             alt="Admin hero">
+    </div>
+
+    <div class="container py-4">
+
+        <h2 class="mb-4">Bienvenue, Admin</h2>
+
+        {# FLASH #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {# ================= CREATE EMPLOYEE ================= #}
+        <div class="card mb-3">
+
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#createEmp" style="cursor:pointer;">
+                👤 Créer un employé
+            </div>
+
+            <div id="createEmp" class="collapse">
+                <div class="card-body">
+
+                    <form method="post" action="{{ path('admin_employes_create') }}">
+
+                        <input class="form-control mb-2" name="pseudo" placeholder="Pseudo" required>
+                        <input class="form-control mb-2" name="email" type="email" placeholder="Email" required>
+                        <input class="form-control mb-2" name="password" type="password" placeholder="Mot de passe" required>
+                        <input class="form-control mb-3" name="confirm_password" type="password" placeholder="Confirmation" required>
+
+                        <button class="btn btn-primary w-100">
+                            Créer
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+        {# ================= TRAJETS ================= #}
+        <div class="card mb-3">
+
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#trajetsChartBlock" style="cursor:pointer;">
+                🚌 Trajets par jour
+            </div>
+
+            <div id="trajetsChartBlock" class="collapse show">
+                <div class="card-body">
+                    <canvas id="trajetsChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        {# ================= CREDITS ================= #}
+        <div class="card mb-3">
+
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#creditsChartBlock" style="cursor:pointer;">
+                📊 Crédits gagnés
+            </div>
+
+            <div id="creditsChartBlock" class="collapse">
+                <div class="card-body">
+                    <canvas id="creditsChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        {# ================= STATS ================= #}
+        <div class="card mb-3">
+
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#statsBlock" style="cursor:pointer;">
+                📋 Statistiques générales
+            </div>
+
+            <div id="statsBlock" class="collapse">
+                <div class="card-body">
+                    <p class="mb-0">
+                        Total crédits plateforme :
+                        <strong>{{ platformCredits|default(0) }}</strong>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        {# ================= USERS ================= #}
+        <div class="card mb-3">
+
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#usersBlock" style="cursor:pointer;">
+                🚫 Suspension de comptes
+            </div>
+
+            <div id="usersBlock" class="collapse">
+                <div class="card-body table-responsive">
+
+                    <table class="table table-striped align-middle">
+
+                        <thead>
+                        <tr>
+                            <th>Pseudo</th>
+                            <th>Email</th>
+                            <th>Crédits</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for u in users|default([]) %}
+                            <tr>
+                                <td>{{ u.pseudo }}</td>
+                                <td>{{ u.email }}</td>
+                                <td>{{ u.credits }}</td>
+                                <td>
+
+                                    {% if u.isActive == false %}
+                                        <span class="badge bg-secondary">Suspendu</span>
+                                    {% else %}
+                                        <form method="post"
+                                              action="{{ path('admin_suspend') }}"
+                                              onsubmit="return confirm('Suspendre cet utilisateur ?');">
+
+                                            <input type="hidden" name="id" value="{{ u.id }}">
+
+                                            <button class="btn btn-danger btn-sm">
+                                                Suspendre
+                                            </button>
+
+                                        </form>
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{# ================= CHARTS ================= #}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const trajetsLabels = {{ trajetsData is defined ? trajetsData|keys|json_encode|raw : '[]' }};
+const trajetsValues = {{ trajetsData is defined ? trajetsData|values|json_encode|raw : '[]' }};
+
+if (trajetsLabels.length > 0) {
+    new Chart(document.getElementById('trajetsChart'), {
+        type: 'bar',
+        data: {
+            labels: trajetsLabels,
+            datasets: [{
+                label: 'Trajets par jour',
+                data: trajetsValues,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        }
+    });
+}
+
+const creditsLabels = {{ creditsData is defined ? creditsData|keys|json_encode|raw : '[]' }};
+const creditsValues = {{ creditsData is defined ? creditsData|values|json_encode|raw : '[]' }};
+
+if (creditsLabels.length > 0) {
+    new Chart(document.getElementById('creditsChart'), {
+        type: 'line',
+        data: {
+            labels: creditsLabels,
+            datasets: [{
+                label: 'Crédits gagnés',
+                data: creditsValues,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.3,
+                fill: false
+            }]
+        }
+    });
+}
+</script>
+
+{% endblock %}

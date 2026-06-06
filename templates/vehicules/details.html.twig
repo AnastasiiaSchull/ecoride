@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du trajet{% endblock %}
+
+{% block body %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="container-fluid p-0">
+
+    {# HERO #}
+    <div class="position-relative mb-4">
+        <img src="{{ asset('images/hero.jpg') }}"
+             class="img-fluid w-100"
+             style="max-height: 300px; object-fit: cover;"
+             alt="EcoRide">
+        <div class="position-absolute top-50 start-50 translate-middle text-white">
+            <h1>Détails</h1>
+        </div>
+    </div>
+
+    <div class="container py-4">
+
+        <h2 class="mb-4">Détails du trajet</h2>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+
+                <p>
+                    <strong>De :</strong> {{ trajet.ville_depart }}
+                    →
+                    <strong>à :</strong> {{ trajet.ville_arrivee }}
+                </p>
+
+                <p>
+                    <strong>Départ :</strong>
+                    {{ trajet.date_depart|date('d/m/Y H:i') }}
+                </p>
+
+                <p>
+                    <strong>Arrivée :</strong>
+                    {{ trajet.date_arrivee|date('d/m/Y H:i') }}
+                </p>
+
+                <p>
+                    <strong>Prix :</strong>
+                    {{ trajet.prix|number_format(2, '.', ' ') }} €
+                </p>
+
+                <p>
+                    <strong>Places disponibles :</strong>
+                    {{ trajet.places_dispo }}
+                </p>
+
+            </div>
+        </div>
+
+        {# CONDUCTEUR + VEHICULE #}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+
+                <h4>Conducteur</h4>
+
+                <p><strong>Pseudo :</strong> {{ trajet.pseudo }}</p>
+
+                <p>
+                    <strong>Note moyenne :</strong>
+                    {{ trajet.note_moyenne ?? '–' }} ⭐
+                </p>
+
+                {% if trajet.photo %}
+                    <img src="{{ asset('assets/uploads/' ~ trajet.photo) }}"
+                         class="rounded-circle mb-3"
+                         style="width:80px;height:80px;object-fit:cover;"
+                         alt="Photo conducteur">
+                {% endif %}
+
+                <hr>
+
+                <h4>Véhicule</h4>
+
+                <p><strong>Marque :</strong> {{ trajet.marque }}</p>
+                <p><strong>Modèle :</strong> {{ trajet.modele }}</p>
+                <p><strong>Énergie :</strong> {{ trajet.energie }}</p>
+
+                {% if trajet.eco %}
+                    <p class="text-success fw-bold">
+                        ✔ Écologique (voiture électrique)
+                    </p>
+                {% endif %}
+
+            </div>
+        </div>
+
+        {# AVIS #}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+
+                <h4>Avis des passagers</h4>
+
+                {% if commentaires is not empty %}
+                    {% for c in commentaires %}
+                        <div class="border-bottom py-2">
+                            💬 {{ c }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Aucun avis</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+        {# RESERVATION #}
+        {% if app.session.get('user_id') %}
+
+            {% if trajet.places_dispo > 0 %}
+
+                <form id="reserveForm"
+                      method="post"
+                      action="{{ path('app_reservation_create') }}">
+
+                    <input type="hidden" name="trajet_id" value="{{ trajet.id }}">
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            onclick="confirmReservation()">
+                        Participer
+                    </button>
+
+                </form>
+
+            {% else %}
+                <p class="text-danger">Aucune place disponible.</p>
+            {% endif %}
+
+        {% else %}
+            <p>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-primary">
+                    Connectez-vous
+                </a>
+                pour participer à ce covoiturage.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+function confirmReservation() {
+    Swal.fire({
+        title: 'Confirmer la réservation ?',
+        text: 'Ce trajet vous coûtera des crédits.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, je confirme',
+        cancelButtonText: 'Annuler'
+    }).then((res) => {
+        if (res.isConfirmed) {
+            document.getElementById('reserveForm').submit();
+        }
+    });
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Employé{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">
+        <i class="bi bi-person-badge me-2"></i>
+        Espace Employé
+    </h2>
+
+    {# Flash messages #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {# ================= MODERATION AVIS ================= #}
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-primary text-white"
+             data-bs-toggle="collapse"
+             data-bs-target="#avisBlock"
+             style="cursor:pointer;">
+
+            <i class="bi bi-chat-square-text me-2"></i>
+            Modération des avis
+
+        </div>
+
+        <div id="avisBlock" class="collapse show">
+
+            <div class="card-body">
+
+                {% if avis is not empty %}
+
+                    {% for a in avis %}
+
+                        <div class="border rounded p-3 mb-3">
+
+                            <p>
+                                <strong>{{ a.passager }}</strong>
+                                ➜
+                                <strong>{{ a.chauffeur }}</strong>
+                            </p>
+
+                            <p>
+                                Note :
+                                <span class="badge bg-warning text-dark">
+                                    {{ a.note }}/5
+                                </span>
+                            </p>
+
+                            <p class="fst-italic">
+                                "{{ a.commentaire }}"
+                            </p>
+
+                            <form method="post"
+                                  action="{{ path('employe_moderation') }}"
+                                  class="d-flex flex-wrap gap-2 align-items-center">
+
+                                <input type="hidden"
+                                       name="avis_id"
+                                       value="{{ a.id }}">
+
+                                <div class="form-check">
+
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="is_problem"
+                                           value="1"
+                                           id="problem{{ a.id }}">
+
+                                    <label class="form-check-label"
+                                           for="problem{{ a.id }}">
+                                        Problème ?
+                                    </label>
+
+                                </div>
+
+                                <button type="submit"
+                                        name="action"
+                                        value="valider"
+                                        class="btn btn-success btn-sm">
+
+                                    <i class="bi bi-check-circle"></i>
+                                    Valider
+
+                                </button>
+
+                                <button type="submit"
+                                        name="action"
+                                        value="refuser"
+                                        class="btn btn-danger btn-sm">
+
+                                    <i class="bi bi-x-circle"></i>
+                                    Refuser
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="alert alert-info mb-0">
+                        Aucun avis à modérer.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {# ================= VOYAGES SIGNALES ================= #}
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-warning"
+             data-bs-toggle="collapse"
+             data-bs-target="#problemesBlock"
+             style="cursor:pointer;">
+
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Voyages signalés
+
+        </div>
+
+        <div id="problemesBlock" class="collapse">
+
+            <div class="card-body">
+
+                {% if problemes is not empty %}
+
+                    {% for pb in problemes %}
+
+                        <div class="border rounded p-3 mb-3">
+
+                            <p>
+                                <strong>Passager :</strong>
+                                {{ pb.passager }}
+                                ({{ pb.emailPassager }})
+                            </p>
+
+                            <p>
+                                <strong>Chauffeur :</strong>
+                                {{ pb.chauffeur }}
+                                ({{ pb.emailChauffeur }})
+                            </p>
+
+                            <p>
+                                <strong>Trajet :</strong>
+                                {{ pb.villeDepart }}
+                                →
+                                {{ pb.villeArrivee }}
+                            </p>
+
+                            <p>
+                                <strong>Date :</strong>
+                                {{ pb.dateDepart|date('d/m/Y H:i') }}
+                            </p>
+
+                            <p class="mb-0">
+                                <strong>Commentaire :</strong>
+                                {{ pb.description }}
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="alert alert-info mb-0">
+                        Aucun trajet signalé.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

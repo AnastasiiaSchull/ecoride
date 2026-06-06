@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter des crédits{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+```
+<div class="row justify-content-center">
+
+    <div class="col-md-6 col-lg-5">
+
+        <div class="card shadow">
+
+            <div class="card-header text-center bg-primary text-white">
+
+                <h2 class="mb-0">
+                    <i class="bi bi-wallet2 me-2"></i>
+                    Ajouter des crédits
+                </h2>
+
+            </div>
+
+            <div class="card-body">
+
+                {% if message is defined and message %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endif %}
+
+                {% for flash in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ flash }}
+                    </div>
+                {% endfor %}
+
+                <form method="post"
+                      action="{{ path('app_credits') }}">
+
+                    <div class="mb-3">
+
+                        <label for="montant"
+                               class="form-label">
+
+                            Montant à ajouter
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <input type="number"
+                                   id="montant"
+                                   name="montant"
+                                   min="1"
+                                   class="form-control"
+                                   required>
+
+                            <span class="input-group-text">
+                                crédits
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="d-grid">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Valider
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="card-footer text-center">
+
+                <a href="{{ path('app_mon_espace') }}"
+                   class="btn btn-outline-secondary">
+
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Retour à mon espace
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

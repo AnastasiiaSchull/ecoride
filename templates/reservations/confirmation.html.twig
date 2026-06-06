@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de réservation{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+```
+<div class="row justify-content-center">
+
+    <div class="col-lg-6">
+
+        <div class="card shadow border-0">
+
+            <div class="card-body text-center p-5">
+
+                <i class="bi bi-check-circle-fill text-success display-1"></i>
+
+                <h2 class="text-success fw-bold mt-3">
+                    Réservation confirmée !
+                </h2>
+
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success mt-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                <div class="mt-4">
+
+                    <a href="{{ path('app_mon_espace') }}"
+                       class="btn btn-primary">
+
+                        <i class="bi bi-person-circle me-2"></i>
+                        Mon espace
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

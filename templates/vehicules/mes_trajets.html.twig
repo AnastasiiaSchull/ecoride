@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes trajets{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">Mes trajets</h2>
+
+    {# FLASH #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if mes_trajets is not empty %}
+
+        <div class="list-group">
+
+            {% for t in mes_trajets %}
+
+                <div class="list-group-item mb-3 shadow-sm">
+
+                    <div class="mb-2">
+                        <strong>
+                            {{ t.ville_depart }} → {{ t.ville_arrivee }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        Départ :
+                        {{ t.date_depart|date('d/m/Y H:i') }}
+                    </div>
+
+                    <div class="mb-2">
+                        Statut :
+                        <span class="fw-bold">{{ t.statut }}</span>
+                    </div>
+
+                    {# ACTIONS #}
+                    {% if t.statut == 'à_venir' %}
+
+                        <form method="post"
+                              action="{{ path('app_trajet_status') }}"
+                              class="d-inline">
+
+                            <input type="hidden" name="trajet_id" value="{{ t.id }}">
+                            <input type="hidden" name="statut" value="en_cours">
+
+                            <button class="btn btn-primary btn-sm">
+                                Démarrer
+                            </button>
+
+                        </form>
+
+                    {% elseif t.statut == 'en_cours' %}
+
+                        <form method="post"
+                              action="{{ path('app_trajet_status') }}"
+                              class="d-inline">
+
+                            <input type="hidden" name="trajet_id" value="{{ t.id }}">
+                            <input type="hidden" name="statut" value="terminé">
+
+                            <button class="btn btn-warning btn-sm">
+                                Terminer
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <span class="badge bg-success">
+                            ✔ Terminé
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            Vous n'avez pas encore publié de trajet.
+        </div>
+
+        <a class="btn btn-primary" href="{{ path('app_trajet_create') }}">
+            Créer un nouveau trajet
+        </a>
+
+    {% endif %}
+
+    <div class="mt-4">
+        <a class="btn btn-outline-secondary" href="{{ path('app_mon_espace') }}">
+            ← Retour
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

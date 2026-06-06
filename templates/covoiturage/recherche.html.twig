@@ -1,0 +1,225 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche de covoiturage - EcoRide{% endblock %}
+
+{% block body %}
+
+{# ================= HERO ================= #}
+<div class="position-relative mb-4">
+    <img src="{{ asset('images/hero.jpg') }}"
+         class="img-fluid w-100"
+         style="max-height: 300px; object-fit: cover;"
+         alt="Hero">
+
+    <h1 class="position-absolute top-50 start-50 translate-middle text-white fw-bold">
+        Eco-covoiturage
+    </h1>
+</div>
+
+<div class="container py-4">
+
+    {# ================= SEARCH FORM ================= #}
+    <h2 class="mb-3">Recherche d’un trajet</h2>
+
+    <form method="get" action="{{ path('app_covoiturage_search') }}" class="row g-3 align-items-end">
+
+        {# TYPE DEPART #}
+        <div class="col-md-3">
+
+            <div class="form-check">
+                <input class="form-check-input"
+                       type="radio"
+                       name="type"
+                       value="depart"
+                       {% if type is defined and type == 'depart' %}checked{% endif %}>
+                <label class="form-check-label">Départ</label>
+            </div>
+
+            <select name="depart" class="form-select mt-2">
+                <option value="">Choisir une ville</option>
+                {% for ville in villesDepart|default([]) %}
+                    <option value="{{ ville }}"
+                        {% if depart is defined and depart == ville %}selected{% endif %}>
+                        {{ ville }}
+                    </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        {# TYPE DESTINATION #}
+        <div class="col-md-3">
+
+            <div class="form-check">
+                <input class="form-check-input"
+                       type="radio"
+                       name="type"
+                       value="destination"
+                       {% if type is defined and type == 'destination' %}checked{% endif %}>
+                <label class="form-check-label">Destination</label>
+            </div>
+
+            <select name="destination" class="form-select mt-2">
+                <option value="">Choisir une ville</option>
+                {% for ville in villesArrivee|default([]) %}
+                    <option value="{{ ville }}"
+                        {% if destination is defined and destination == ville %}selected{% endif %}>
+                        {{ ville }}
+                    </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        {# DATE #}
+        <div class="col-md-3">
+            <label class="form-label">Date</label>
+            <input type="date"
+                   name="date"
+                   class="form-control"
+                   value="{{ date|default('now'|date('Y-m-d')) }}">
+        </div>
+
+        {# PASSAGERS #}
+        <div class="col-md-2">
+            <label class="form-label">Passagers</label>
+            <input type="number"
+                   name="passager"
+                   min="1"
+                   max="8"
+                   class="form-control"
+                   value="{{ passager|default(1) }}">
+        </div>
+
+        {# BTN #}
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100">
+                OK
+            </button>
+        </div>
+
+    </form>
+
+    {# ================= TITLE ================= #}
+    <h3 class="mt-5 mb-3">
+        Résultats — {{ trajetTitre|default('Trajets') }}
+    </h3>
+
+    {# ================= RESULTS ================= #}
+    {% if trajets is empty %}
+
+        <div class="alert alert-warning">
+            Aucun trajet trouvé pour cette recherche.
+        </div>
+
+    {% else %}
+
+        <div class="row g-3">
+
+            {% for trajet in trajets %}
+
+                <div class="col-12">
+
+                    <div class="card shadow-sm">
+
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between">
+
+                                {# TIMES #}
+                                <div>
+
+                                    <div class="fw-bold">
+                                        {{ trajet.date_depart|date('H:i') }}
+                                        →
+                                        {{ trajet.date_arrivee|date('H:i') }}
+                                    </div>
+
+                                    <div class="text-muted">
+                                        {{ trajet.ville_depart }}
+                                        →
+                                        {{ trajet.ville_arrivee }}
+                                    </div>
+
+                                </div>
+
+                                {# PRIX #}
+                                <div class="text-end">
+                                    <h4 class="text-primary mb-0">
+                                        {{ trajet.prix }} €
+                                    </h4>
+                                </div>
+
+                            </div>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <div>
+                                    <div>
+                                        Conducteur :
+                                        <strong>{{ trajet.conducteur_nom|default('—') }}</strong>
+                                        ⭐ {{ trajet.conducteur_note|default('–') }}
+                                    </div>
+
+                                    <div>
+                                        Places restantes :
+                                        {{ trajet.places_dispo }}
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+
+                                    <a href="{{ path('app_trajet_details', {id: trajet.id}) }}"
+                                       class="btn btn-outline-primary btn-sm">
+                                        Détails
+                                    </a>
+
+                                    {% if trajet.places_dispo > 0 %}
+
+                                        {% if app.user %}
+
+                                            <form method="post" action="{{ path('app_reservation_create') }}">
+                                                <input type="hidden" name="trajet_id" value="{{ trajet.id }}">
+                                                <button class="btn btn-primary btn-sm">
+                                                    Réserver
+                                                </button>
+                                            </form>
+
+                                        {% else %}
+
+                                            <a href="{{ path('app_login') }}"
+                                               class="btn btn-secondary btn-sm">
+                                                Connexion
+                                            </a>
+
+                                        {% endif %}
+
+                                    {% else %}
+
+                                        <button class="btn btn-dark btn-sm" disabled>
+                                            Complet
+                                        </button>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

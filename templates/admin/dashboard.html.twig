@@ -165,41 +165,64 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-const trajetsLabels = {{ trajetsData is defined ? trajetsData|keys|json_encode|raw : '[]' }};
-const trajetsValues = {{ trajetsData is defined ? trajetsData|values|json_encode|raw : '[]' }};
+(() => {
 
-if (trajetsLabels.length > 0) {
-    new Chart(document.getElementById('trajetsChart'), {
-        type: 'bar',
-        data: {
-            labels: trajetsLabels,
-            datasets: [{
-                label: 'Trajets par jour',
-                data: trajetsValues,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)'
-            }]
+    const trajetsData = {{ trajetsData|default({})|json_encode|raw }};
+    const creditsData = {{ creditsData|default({})|json_encode|raw }};
+
+    const trajetsCanvas = document.getElementById('trajetsChart');
+    const creditsCanvas = document.getElementById('creditsChart');
+
+    // sécurité : garantir objet JS valide
+    const safeObj = (data) => (data && typeof data === 'object') ? data : {};
+
+    const tData = safeObj(trajetsData);
+    const cData = safeObj(creditsData);
+
+    // ================= TRAJETS =================
+    if (trajetsCanvas) {
+
+        const labels = Object.keys(tData);
+        const values = Object.values(tData);
+
+        if (labels.length > 0) {
+            new Chart(trajetsCanvas, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Trajets par jour',
+                        data: values,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    }]
+                }
+            });
         }
-    });
-}
+   }
 
-const creditsLabels = {{ creditsData is defined ? creditsData|keys|json_encode|raw : '[]' }};
-const creditsValues = {{ creditsData is defined ? creditsData|values|json_encode|raw : '[]' }};
+    // ================= CREDITS =================
+    if (creditsCanvas) {
 
-if (creditsLabels.length > 0) {
-    new Chart(document.getElementById('creditsChart'), {
-        type: 'line',
-        data: {
-            labels: creditsLabels,
-            datasets: [{
-                label: 'Crédits gagnés',
-                data: creditsValues,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.3,
-                fill: false
-            }]
+        const labels = Object.keys(cData);
+        const values = Object.values(cData);
+
+        if (labels.length > 0) {
+            new Chart(creditsCanvas, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Crédits gagnés',
+                        data: values,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.3,
+                        fill: false
+                    }]
+                }
+            });
         }
-    });
-}
+    }
+
+})();
 </script>
-
 {% endblock %}

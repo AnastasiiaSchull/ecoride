@@ -165,10 +165,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-(() => {
+/*(() => {
 
-    const trajetsData = {{ trajetsData|default({})|json_encode|raw }};
-    const creditsData = {{ creditsData|default({})|json_encode|raw }};
+    const charttrajetsData = {{ trajetsData|default({})|json_encode|raw }};
+    const chartcreditsData = {{ creditsData|default({})|json_encode|raw }};
 
     const trajetsCanvas = document.getElementById('trajetsChart');
     const creditsCanvas = document.getElementById('creditsChart');
@@ -176,8 +176,8 @@
     // sécurité : garantir objet JS valide
     const safeObj = (data) => (data && typeof data === 'object') ? data : {};
 
-    const tData = safeObj(trajetsData);
-    const cData = safeObj(creditsData);
+     const tData = safeObj(charttrajetsData);
+    const cData = safeObj(chartcreditsData);
 
     // ================= TRAJETS =================
     if (trajetsCanvas) {
@@ -223,6 +223,6 @@
         }
     }
 
-})();
+})();*/
 </script>
 {% endblock %}

@@ -21,7 +21,7 @@ class Reservation
     #[ORM\JoinColumn(nullable: false)]
     private ?Trajet $trajet = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $passager = null;
 

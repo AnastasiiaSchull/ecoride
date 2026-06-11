@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use App\Repository\VehiculeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,7 +16,7 @@ class Vehicule
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'vehicules')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'vehicules')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -34,7 +35,7 @@ class Vehicule
     #[ORM\Column]
     private ?int $places = null;
 
-    #[ORM\ManyToMany(targetEntity: Preference::class)]
+    #[ORM\ManyToMany(targetEntity: Preference::class, inversedBy: 'vehicules')]
     #[ORM\JoinTable(name: 'vehicule_preferences')]
     private Collection $preferences;
 
@@ -53,7 +54,7 @@ class Vehicule
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+     public function setUser(?User $user): self
     {
         $this->user = $user;
         return $this;

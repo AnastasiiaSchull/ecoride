@@ -13,7 +13,7 @@ class Trajet
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'trajetsConducteur')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $conducteur = null;
 

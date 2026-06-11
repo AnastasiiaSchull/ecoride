@@ -41,6 +41,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Vehicule::class)]
+    private Collection $vehicules;
+
     #[ORM\OneToMany(mappedBy: 'conducteur', targetEntity: Trajet::class)]
     private Collection $trajetsConducteur;
 
@@ -52,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
         $this->trajetsConducteur = new ArrayCollection();
         $this->reservations = new ArrayCollection();
-    
+        $this->vehicules = new ArrayCollection();
     // sécurité : rôle par défaut
         $this->roles = ['ROLE_USER'];
     }
@@ -203,5 +206,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getReservations(): Collection
     {
         return $this->reservations;
+    }
+
+    public function getVehicules(): Collection
+    {
+        return $this->vehicules;
     }
 }

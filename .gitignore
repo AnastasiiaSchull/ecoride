@@ -3,6 +3,7 @@ mongo-data/
 
 # Composer
 /vendor/
+/var/
 
 # Journaux et fichiers temporaires
 *.log

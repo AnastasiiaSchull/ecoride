@@ -1,10 +1,14 @@
 FROM php:8.2-apache
 
-# Installer les dépendances + MongoDB
-RUN apt-get update && apt-get install -y libzip-dev unzip && docker-php-ext-install pdo pdo_mysql \
-    && pecl install mongodb \
-    && docker-php-ext-enable mongodb
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Installer les dépendances + MongoDB
+RUN apt-get update && apt-get install -y libzip-dev unzip && docker-php-ext-install pdo pdo_mysql 
+
+
+# MongoDB temporairement désactivé
+# && pecl install mongodb
+# && docker-php-ext-enable mongodb
 
 # Copier les fichiers du projet dans le conteneur
 COPY . /var/www/html/

@@ -41,12 +41,12 @@ class TrajetRepository extends ServiceEntityRepository
 
         if ($depart) {
             $qb->andWhere('t.villeDepart = :depart')
-               ->setParameter('depart', $depart);
+                ->setParameter('depart', $depart);
         }
 
         if ($arrivee) {
             $qb->andWhere('t.villeArrivee = :arrivee')
-               ->setParameter('arrivee', $arrivee);
+                ->setParameter('arrivee', $arrivee);
         }
 
         if ($date) {
@@ -60,16 +60,16 @@ class TrajetRepository extends ServiceEntityRepository
             }
 
             $debutJour = $dateImmutable->setTime(0, 0, 0);
-            $finJour   = $dateImmutable->setTime(23, 59, 59);
+            $finJour = $dateImmutable->setTime(23, 59, 59);
 
             $qb->andWhere('t.dateDepart BETWEEN :debut AND :fin')
                 ->setParameter('debut', $debutJour)
                 ->setParameter('fin', $finJour);
         }
-        
+
         if ($places) {
             $qb->andWhere('t.placesDispo >= :places')
-               ->setParameter('places', $places);
+                ->setParameter('places', $places);
         }
 
         return $qb
@@ -151,5 +151,23 @@ class TrajetRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findDistinctDepartures(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('DISTINCT t.villeDepart')
+            ->orderBy('t.villeDepart', 'ASC')
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
+
+    public function findDistinctArrivals(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('DISTINCT t.villeArrivee')
+            ->orderBy('t.villeArrivee', 'ASC')
+            ->getQuery()
+            ->getSingleColumnResult();
     }
 }

@@ -19,10 +19,10 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home', methods: ['GET'])]
     public function index(): Response
     {
-        $villesDepart = $this->trajetRepository->findDistinctDepartCities();
-        $villesArrivee = $this->trajetRepository->findDistinctArrivalCities();
+        $villesDepart = $this->trajetRepository->findAll();
+        $villesArrivee = $this->trajetRepository->findAll();
 
-        $trajetsAVenir = $this->trajetRepository->findUpcomingLimited(3);
+        $trajetsAVenir = $this->trajetRepository->find(3);
 
         return $this->render('home/index.html.twig', [
             'villesDepart'  => $villesDepart,

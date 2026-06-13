@@ -159,4 +159,9 @@ class Trajet
         $this->statut = $statut;
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getVilleDepart() . ' → ' . $this->getVilleArrivee();
+    }
 }

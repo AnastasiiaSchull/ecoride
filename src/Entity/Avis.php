@@ -27,6 +27,10 @@ class Avis
     #[ORM\Column(type: 'text')]
     private ?string $commentaire = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $approuve = false;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -73,6 +77,18 @@ class Avis
     public function setCommentaire(string $commentaire): static
     {
         $this->commentaire = $commentaire;
+        return $this;
+    }
+
+    public function isApprouve(): bool
+    {
+        return $this->approuve;
+    }
+
+    public function setApprouve(bool $approuve): static
+    {
+        $this->approuve = $approuve;
+
         return $this;
     }
 }

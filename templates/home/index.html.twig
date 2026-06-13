@@ -43,7 +43,7 @@
             Recherche d'un trajet
         </h2>
 
-        <form action="{{ path('app_covoiturages') }}"
+        <form action="{{ path('covoiturages_search') }}"
               method="get"
               class="row g-3">
 
@@ -170,7 +170,7 @@
 
                         <div class="col-md-4">
 
-                            <a href="{{ path('app_covoiturages', {
+                            <a href="{{ path('covoiturages_search', {
                                 depart: t.ville_depart,
                                 destination: t.ville_arrivee,
                                 date: t.prochaine_date|date('Y-m-d'),

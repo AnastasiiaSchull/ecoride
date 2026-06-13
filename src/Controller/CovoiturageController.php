@@ -25,8 +25,8 @@ class CovoiturageController extends AbstractController
     #[Route('/covoiturages', name: 'covoiturage_search', methods: ['GET'])]
     public function search(Request $request): Response
     {
-        $villesDepart  = $this->trajetRepository->findDistinctDepartCities();
-        $villesArrivee = $this->trajetRepository->findDistinctArrivalCities();
+        $villesDepart = $this->trajetRepository->findDistinctDepartures();
+        $villesArrivee = $this->trajetRepository->findDistinctArrivals();
 
         $first = $this->trajetRepository->findOneBy([], ['id' => 'ASC']);
 
@@ -35,6 +35,12 @@ class CovoiturageController extends AbstractController
         $date        = $request->query->get('date', (new \DateTime())->format('Y-m-d'));
         $passager    = (int) $request->query->get('passager', 1);
         $filtre      = $request->query->get('filtre', 'ecologique');
+
+        $date = null;
+
+        if (!empty($dateString)) {
+            $date = new \DateTime($dateString);
+        }
 
         $trajets = $this->trajetRepository->searchAdvanced(
             $depart,

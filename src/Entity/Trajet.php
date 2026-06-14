@@ -18,7 +18,7 @@ class Trajet
     private ?User $conducteur = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private ?Vehicule $vehicule = null;
 
     #[ORM\Column(length: 100)]
@@ -44,6 +44,9 @@ class Trajet
 
     #[ORM\Column(length: 20)]
     private string $statut = 'a_venir';
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $commentaires = null;
 
     public function getId(): ?int
     {
@@ -158,7 +161,21 @@ class Trajet
     {
         $this->statut = $statut;
         return $this;
+    } 
+
+    public function getCommentaires(): ?string
+    {
+        return $this->commentaires;
     }
+
+    public function setCommentaires(?string $commentaires): static
+    {
+        $this->commentaires = $commentaires;
+
+        return $this;
+    }
+
+    //à part un To_STring override d'affichage -----------------
 
     public function __toString(): string
     {

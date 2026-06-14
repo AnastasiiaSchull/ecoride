@@ -19,8 +19,8 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home', methods: ['GET'])]
     public function index(): Response
     {
-        $villesDepart = $this->trajetRepository->findAll();
-        $villesArrivee = $this->trajetRepository->findAll();
+        $villesDepart = $this->trajetRepository->findDistinctDepartures();
+        $villesArrivee = $this->trajetRepository->findDistinctArrivals();
 
         $trajetsAVenir = $this->trajetRepository->find(3);
 

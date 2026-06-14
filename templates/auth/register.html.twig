@@ -19,7 +19,7 @@
         </div>
     {% endif %}
 
-    <form method="post" action="{{ path('app_register') }}">
+    <form method="post" action="{{ path('register') }}">
 
         {# PSEUDO #}
         <div class="mb-3">
@@ -121,9 +121,9 @@
                 <label class="form-label">Énergie</label>
                 <select name="energie" class="form-select">
                     <option value="">-- Choisir --</option>
-                    <option value="essence" {{ old.energie == 'essence' ? 'selected' : '' }}>Essence</option>
-                    <option value="diesel" {{ old.energie == 'diesel' ? 'selected' : '' }}>Diesel</option>
-                    <option value="electrique" {{ old.energie == 'electrique' ? 'selected' : '' }}>Électrique</option>
+                    <option value="essence" {{ app.request.get('energie') == 'essence' ? 'selected' : '' }}>Essence</option>
+                    <option value="diesel" {{ app.request.get('energie') == 'diesel' ? 'selected' : ''  }}>Diesel</option>
+                    <option value="electrique" {{  app.request.get('energie') == 'electrique' ? 'selected' : ''  }}>Électrique</option>
                 </select>
             </div>
 
@@ -147,7 +147,7 @@
     <div class="text-center mt-3">
         <p>
             Déjà inscrit ?
-            <a href="{{ path('app_login') }}">Se connecter</a>
+            <a href="{{ path('login') }}">Se connecter</a>
         </p>
     </div>
 

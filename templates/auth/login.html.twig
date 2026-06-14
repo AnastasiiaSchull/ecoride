@@ -23,7 +23,7 @@
     {% endfor %}
 
     {# FORM #}
-    <form method="post" action="{{ path('app_login') }}">
+    <form method="post" action="{{ path('login') }}">
 
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
@@ -58,7 +58,7 @@
     <div class="text-center mt-3">
         <p>
             Pas encore inscrit ?
-            <a href="{{ path('app_register') }}">Créer un compte</a>
+            <a href="{{ path('register') }}">Créer un compte</a>
         </p>
     </div>
 

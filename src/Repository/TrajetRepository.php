@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Trajet;
-use DateTimeInterface;
-use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

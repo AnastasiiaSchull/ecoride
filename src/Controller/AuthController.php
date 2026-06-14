@@ -61,7 +61,9 @@ class AuthController extends AbstractController
     #[Route('/inscription', name: 'register', methods: ['GET'])]
     public function registerForm(): Response
     {
-        return $this->render('auth/register.html.twig');
+         return $this->render('auth/register.html.twig',[
+            //'old' => $request->request->all(),
+        ]);
     }
 
     #[Route('/inscription', name: 'register_post', methods: ['POST'])]

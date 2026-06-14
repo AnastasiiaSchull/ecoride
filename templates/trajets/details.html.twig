@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du trajet{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">
+                        {{ trajet.villeDepart }} → {{ trajet.villeArrivee }}
+                    </h2>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Ville de départ :</strong><br>
+                            {{ trajet.villeDepart }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <strong>Ville d'arrivée :</strong><br>
+                            {{ trajet.villeArrivee }}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Date de départ :</strong><br>
+                            {{ trajet.dateDepart|date('d/m/Y H:i') }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <strong>Date d'arrivée :</strong><br>
+                            {{ trajet.dateArrivee|date('d/m/Y H:i') }}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Prix :</strong><br>
+                            {{ trajet.prix }} crédits
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Places disponibles :</strong><br>
+                            {{ trajet.placesDispo }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Écologique :</strong><br>
+                            {% if trajet.eco %}
+                                <span class="badge bg-success">Oui</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Non</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <strong>Conducteur :</strong><br>
+                        {{ trajet.conducteur.pseudo ?? trajet.conducteur.email }}
+                    </div>
+
+                    {% if trajet.vehicule %}
+                        <div class="mb-3">
+                           {#} <strong>Véhicule :</strong><br>
+                            {{ trajet.vehicule.marque }}
+                            {{ trajet.vehicule.modele }}
+                        </div>#}
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <strong>Statut :</strong><br>
+
+                        {% if trajet.statut == 'a_venir' %}
+                            <span class="badge bg-primary">À venir</span>
+                        {% elseif trajet.statut == 'en_cours' %}
+                            <span class="badge bg-warning text-dark">En cours</span>
+                        {% elseif trajet.statut == 'termine' %}
+                            <span class="badge bg-success">Terminé</span>
+                        {% elseif trajet.statut == 'annule' %}
+                            <span class="badge bg-danger">Annulé</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ trajet.statut }}</span>
+                        {% endif %}
+                    </div>
+
+                    {% if trajet.commentaires %}
+                        <hr>
+
+                        <div class="mb-3">
+                            <strong>Commentaires du conducteur :</strong>
+
+                            <div class="alert alert-light border mt-2">
+                                {{ trajet.commentaires|nl2br }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="card-footer text-center">
+                    <a href="{{ path('covoiturage_search') }}"
+                       class="btn btn-outline-secondary">
+                        Retour à la recherche
+                    </a>
+
+                    <a href="{{ path('reservation_my', {'id': trajet.id}) }}"
+                       class="btn btn-success">
+                        Réserver ce trajet
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

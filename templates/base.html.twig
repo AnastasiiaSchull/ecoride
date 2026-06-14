@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
         {% block stylesheets %}
+          {{ encore_entry_link_tags('app') }}
         <style>
            .hero-banner {
                 width: 100%;
@@ -52,7 +53,7 @@
                 position: absolute;
                 text-decoration: none;
                 top: 200px;
-                right: 120px;
+                right: 150px;
                 z-index: 10;
             }
 
@@ -75,7 +76,7 @@
         {% endblock %}
 
         {% block javascripts %}
-            {{ importmap('app') }}
+             {{ encore_entry_script_tags('app') }}
         {% endblock %}
 
         {% set frankenphpHotReload =
@@ -110,8 +111,8 @@
                     <a href="{{ path('admin_dashboard') }}" class="btn btn-primary hero-login2">
                         Dashboard
                     </a>
-                    <a href="{{ path('logout') }}" class="btn btn-primary hero-login">
-                        Quitter
+                     <a href="{{ path('logout') }}" id="logout-link" class="btn btn-danger hero-login">
+                        Déconnexion
                     </a>
                     </div>
                 {% elseif app.user %}
@@ -160,6 +161,44 @@
                 </div>
             </div>
         </footer>
+              <script>
+              document.addEventListener('DOMContentLoaded', function () {
+
+              const logoutBtn = document.getElementById('logout-link');
+
+              if (!logoutBtn) return;
+
+              logoutBtn.addEventListener('click', function (e) {
+                     e.preventDefault(); // 👈 IMPORTANT
+
+                     Swal.fire({
+                     title: 'Déconnexion',
+                     text: 'Voulez-vous vraiment quitter votre session ?',
+                     icon: 'warning',
+
+                     showCancelButton: true,
+                     confirmButtonText: 'Oui',
+                     cancelButtonText: 'Annuler',
+
+                     buttonsStyling: false,
+
+                     customClass: {
+                            popup: 'glass-popup',
+                            title: 'glass-title',
+                            htmlContainer: 'glass-html',
+                            confirmButton: 'btn btn-danger mx-2 px-4',
+                            cancelButton: 'btn btn-secondary mx-2 px-4'
+                     }
+                     }).then((result) => {
+                     if (result.isConfirmed) {
+                            window.location.href = logoutBtn.href;
+                     }
+                     });
+              });
+
+              });
+       </script>
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 </html>

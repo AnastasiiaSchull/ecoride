@@ -24,6 +24,48 @@ class CovoiturageController extends AbstractController
     // =========================
     #[Route('/covoiturages', name: 'covoiturage_search', methods: ['GET'])]
     public function search(Request $request): Response
+        {
+            $villesDepart = $this->trajetRepository->findDistinctDepartures();
+            $villesArrivee = $this->trajetRepository->findDistinctArrivals();
+
+            $first = $this->trajetRepository->findOneBy([], ['id' => 'ASC']);
+
+            $depart      = $request->query->get('depart');
+            $destination = $request->query->get('destination');
+            $dateString  = $request->query->get('date');
+            $passager    = (int) $request->query->get('passager', 1);
+            $filtre      = $request->query->get('filtre');
+
+            // 🔥 conversion date propre
+            $date = null;
+            if (!empty($dateString)) {
+                $date = new \DateTime($dateString);
+            }
+
+            // 🚨 évite afficher tout si rien sélectionné
+            $trajets = [];
+
+            if ($depart || $destination || $date || $passager > 1) {
+                $trajets = $this->trajetRepository->searchTrajets(
+                    $depart,
+                    $destination,
+                    $date,
+                    $passager
+                );
+            }
+
+            return $this->render('covoiturage/recherche.html.twig', [
+                'villesDepart'  => $villesDepart,
+                'villesArrivee' => $villesArrivee,
+                'trajets'       => $trajets,
+                'depart'        => $depart,
+                'destination'   => $destination,
+                'date'          => $dateString,
+                'passager'      => $passager,
+            ]);
+        }
+    /*#[Route('/covoiturages', name: 'covoiturage_search', methods: ['GET'])]
+    public function search(Request $request): Response
     {
         $villesDepart = $this->trajetRepository->findDistinctDepartures();
         $villesArrivee = $this->trajetRepository->findDistinctArrivals();
@@ -58,7 +100,7 @@ class CovoiturageController extends AbstractController
             'destination'   => $destination,
             'date'          => $date,
         ]);
-    }
+    }*/
 
     // =========================
     // POST /trajets/creer

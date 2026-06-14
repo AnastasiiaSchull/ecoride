@@ -20,6 +20,33 @@ class TrajetController extends AbstractController
         private ReservationRepository $reservationRepository
     ) {}
 
+     #[Route('/recherche', name: 'trajet_search', methods: ['GET'])]
+        public function search(Request $request): Response
+        {
+            $depart = $request->query->get('depart');
+            $arrivee = $request->query->get('destination');
+            $date = $request->query->get('date');
+            $places = $request->query->get('passager');
+
+            $trajets = [];
+
+            if ($depart || $arrivee || $date || $places) {
+                $trajets = $this->trajetRepository->searchTrajets(
+                    $depart,
+                    $arrivee,
+                    $date ? new \DateTime($date) : null,
+                    $places ? (int) $places : null
+                );
+            }
+
+            return $this->render('trajets/recherche.html.twig', [
+                'trajets' => $trajets,
+                'depart' => $depart,
+                'destination' => $arrivee,
+                'date' => $date,
+                'passager' => $places,
+            ]);
+        }
     // =========================
     // DETAILS
     // =========================

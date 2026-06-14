@@ -145,14 +145,14 @@
                                         {{ trajet.placesDispo }}
                                     </div>
                                 </div>
-
+                                <br>
                                 <div class="d-flex gap-2">
 
                                     <a href="{{ path('trajet_details', {id: trajet.id}) }}"
                                        class="btn btn-outline-primary btn-sm">
                                         Détails
                                     </a>
-
+                                    <br><br>
                                     {% if trajet.placesDispo > 0 %}
 
                                         {% if app.user %}
@@ -165,7 +165,7 @@
                                             </form>
 
                                         {% else %}
-
+                                        <br>
                                             <a href="{{ path('login') }}"
                                                class="btn btn-secondary btn-sm">
                                                 Connexion

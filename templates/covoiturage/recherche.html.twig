@@ -4,23 +4,13 @@
 
 {% block body %}
 
-{# ================= HERO ================= #}
-<div class="position-relative mb-4 w-100">
-            <img src="{{ asset('images/hero.jpg') }}"
-                class="img-fluid w-100"
-                style="max-height: 300px; object-fit: cover;"
-                alt="Hero">
 
-            <h1 class="position-absolute top-50 start-50 translate-middle text-white fw-bold">
-                Eco-covoiturage
-            </h1>
-        </div>
+<div class="container py-5">
 
-<div class="container py-4">
-
-  {# ================= SEARCH FORM ================= #}
-        {# DEPARTURE CHOICE #}
-<form method="GET" action="{{ path('covoiturage_search') }}">
+{# ================= SEARCH FORM ================= #}
+{# DEPARTURE CHOICE #}
+<form method="GET" action="{{ path('covoiturage_search') }}" class="mb-4">
+    <div class="row g-3 align-items-end justify-content-center">
         <div class="col-md-3">
             <label class="form-label fw-bold">Départ</label>
             <select name="depart" class="form-select">
@@ -49,15 +39,14 @@
         </div>
         <br>
         {# DATE #}
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label class="form-label">Date</label>
             <input type="date"
                    name="date"
                    class="form-control"
                    value="{{ date|default('now'|date('Y-m-d')) }}">
         </div>
-        <br>
-        {# PASSAGERS #}
+
         <div class="col-md-2">
             <label class="form-label">Passagers</label>
             <input type="number"
@@ -68,10 +57,9 @@
                    value="{{ passager|default(1) }}">
         </div>
         <br>
-        {# BTN #}
-        <div class="col-md-1">
+        <div class="col-md-2">
             <button type="submit" class="btn btn-primary w-100">
-                OK
+                Rechercher
             </button>
         </div>
 

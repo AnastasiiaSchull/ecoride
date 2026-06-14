@@ -64,43 +64,6 @@ class CovoiturageController extends AbstractController
                 'passager'      => $passager,
             ]);
         }
-    /*#[Route('/covoiturages', name: 'covoiturage_search', methods: ['GET'])]
-    public function search(Request $request): Response
-    {
-        $villesDepart = $this->trajetRepository->findDistinctDepartures();
-        $villesArrivee = $this->trajetRepository->findDistinctArrivals();
-
-        $first = $this->trajetRepository->findOneBy([], ['id' => 'ASC']);
-
-        $depart      = $request->query->get('depart', $first?->getVilleDepart());
-        $destination = $request->query->get('destination', $first?->getVilleArrivee());
-        $date        = $request->query->get('date', (new \DateTime())->format('Y-m-d'));
-        $passager    = (int) $request->query->get('passager', 1);
-        $filtre      = $request->query->get('filtre', 'ecologique');
-
-        $date = null;
-
-        if (!empty($dateString)) {
-            $date = new \DateTime($dateString);
-        }
-
-        $trajets = $this->trajetRepository->searchAdvanced(
-            $depart,
-            $destination,
-            $date,
-            $passager,
-            $filtre
-        );
-
-        return $this->render('covoiturage/recherche.html.twig', [
-            'villesDepart'  => $villesDepart,
-            'villesArrivee' => $villesArrivee,
-            'trajets'       => $trajets,
-            'depart'        => $depart,
-            'destination'   => $destination,
-            'date'          => $date,
-        ]);
-    }*/
 
     // =========================
     // POST /trajets/creer

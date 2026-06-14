@@ -48,6 +48,14 @@
                 z-index: 10;
             }
 
+            .hero-login2 {
+                position: absolute;
+                text-decoration: none;
+                top: 200px;
+                right: 120px;
+                z-index: 10;
+            }
+
             .footer-ecoride {
                 display: flex;
                 width: 100%;
@@ -95,11 +103,25 @@
                     le covoiturage simple et écologique.
                 </h1>
 
-            </div>
-              <a href="{{ path('login') }}"
-                            class="btn btn-primary hero-login">
-                                   Se connecter
-                            </a>
+             </div>
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div>
+                    <a href="{{ path('admin_dashboard') }}" class="btn btn-primary hero-login2">
+                        Dashboard
+                    </a>
+                    <a href="{{ path('logout') }}" class="btn btn-primary hero-login">
+                        Quitter
+                    </a>
+                    </div>
+                {% elseif app.user %}
+                    {# utilisateur connecté non admin #}
+                {% else %}
+                    <a href="{{ path('login') }}" class="btn btn-primary hero-login">
+                        Se connecter
+                    </a>
+                {% endif %}
+
         </div>
 
         {% block body %} {% endblock %}

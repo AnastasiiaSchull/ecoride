@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -84,5 +85,49 @@ class ReservationRepository extends ServiceEntityRepository
             ->orderBy('r.dateReservation', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function countCreditsByDriver(int $driverId): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->join('r.trajet', 't')
+            ->join('t.conducteur', 'c')
+            ->andWhere('c.id = :id')
+            ->setParameter('id', $driverId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countByPassager(int $passagerId): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.passager = :passager')
+            ->setParameter('passager', $passagerId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function driversForReview(int $passagerId): array
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb->join('r.trajet', 't')
+        ->join('t.conducteur', 'c')
+        ->where('r.passager = :passager')
+        ->andWhere('r.statut = :statut')
+        ->setParameter('passager', $passagerId)
+        ->setParameter('statut', Reservation::CONFIRMEE);
+
+        $results = $qb->getQuery()->getResult();
+
+        $drivers = [];
+
+        foreach ($results as $reservation) {
+            $drivers[] = $reservation->getTrajet()->getConducteur();
+        }
+
+        return $drivers;
     }
 }

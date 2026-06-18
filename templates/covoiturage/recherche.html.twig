@@ -1,19 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Recherche de covoiturage - EcoRide{% endblock %}
+{% block title %}Recherche de covoiturage - ECORIDE{% endblock %}
 
 {% block body %}
 
 
-<div class="container py-5">
+{#<div class="container py-5">#}
+{#<div class="py-5">#}
+
+<div class="d-flex justify-content-center mb-5 text-primary fw-bold">
+    <h1 class="mb-1" style="font-weight: 700; color: green">Je trouve mon EcoRIDE ...</h1>
+</div>
 
 {# ================= SEARCH FORM ================= #}
 {# DEPARTURE CHOICE #}
 <form method="GET" action="{{ path('covoiturage_search') }}" class="mb-4">
-    <div class="row g-3 align-items-end justify-content-center">
-        <div class="col-md-3">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    <div class="column g-3 align-items-end justify-content-center">
+
+        <div class="row  justify-content-center">
             <label class="form-label fw-bold">Départ</label>
-            <select name="depart" class="form-select">
+            <select name="depart" class="form-select mb-4">
                 <option value="">Choisir une ville</option>
                 {% for ville in villesDepart|default([]) %}
                     <option value="{{ ville }}"
@@ -23,11 +39,10 @@
                 {% endfor %}
             </select>
         </div>
-         <br>
-        {# DESTINATION CHOICE #}
-        <div class="col-md-3">
+        
+        <div class="row  justify-content-center">
             <label class="form-label fw-bold">Destination</label>
-            <select name="destination" class="form-select">
+            <select name="destination" class="form-select mb-4">
                 <option value="">Choisir une ville</option>
                 {% for ville in villesArrivee|default([]) %}
                     <option value="{{ ville }}"
@@ -37,18 +52,17 @@
                 {% endfor %}
             </select>
         </div>
-        <br>
-        {# DATE #}
-        <div class="col-md-2">
-            <label class="form-label">Date</label>
+        
+        <div class="row  justify-content-center">
+            <label class="form-label fw-bold">Date</label>
             <input type="date"
                    name="date"
-                   class="form-control"
-                   value="{{ date|default('now'|date('Y-m-d')) }}">
+                   class="form-control mb-4"
+                   value="">
         </div>
 
-        <div class="col-md-2">
-            <label class="form-label">Passagers</label>
+        <div class="row  justify-content-center">
+            <label class="form-label fw-bold">Passagers</label>
             <input type="number"
                    name="passager"
                    min="1"
@@ -56,24 +70,25 @@
                    class="form-control"
                    value="{{ passager|default(1) }}">
         </div>
-        <br>
-        <div class="col-md-2">
-              <div class="d-grid mt-3">
+        
+        <div class="row  justify-content-center mt-2">
+            <div class="d-grid mt-3">
                 <button type="submit" class="btn btn-primary">
                     Rechercher
                 </button>
             </div>
         </div>
 
-    </form>
+    </div>
+</form>
 
     {# ================= TITLE ================= #}
-    <h3 class="mt-5 mb-3">
+    <h3 class="mt-5 mb-3 text-center">
         Résultats — {{ trajetTitre|default('Trajets') }}
     </h3>
 
     {# ================= RESULTS ================= #}
-    {% if trajets is empty %}
+    {% if trajetsAVenir is empty %}
 
         <div class="alert alert-warning">
             Aucun trajet trouvé pour cette recherche.
@@ -83,7 +98,7 @@
 
         <div class="row g-3">
 
-            {% for trajet in trajets %}
+            {% for trajet in trajetsAVenir %}
 
                 <div class="col-12">
 
@@ -138,7 +153,7 @@
                                 <br>
                                 <div class="d-flex gap-2">
 
-                                    <a href="{{ path('trajet_details', {id: trajet.id}) }}"
+                                    <a href="{{ path('covoiturage_show', {id: trajet.id}) }}"
                                        class="btn btn-outline-primary btn-sm">
                                         Détails
                                     </a>
@@ -155,9 +170,9 @@
                                             </form>
 
                                         {% else %}
-                                        <br>
-                                            <a href="{{ path('login') }}"
-                                               class="btn btn-secondary btn-sm">
+                                    <br>
+
+                                            <a href="#" class="btn btn-secondary btn-sm login-trigger">
                                                 Connexion
                                             </a>
 
@@ -187,6 +202,83 @@
 
     {% endif %}
 
-</div>
+{#</div>#}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.login-trigger').forEach(button => {
+
+        button.addEventListener('click', async function (e) {
+            e.preventDefault();
+
+            const { value: formValues } = await Swal.fire({
+                title: 'Connexion',
+                html:
+                    '<input id="swal-email" class="swal2-input" placeholder="Email">' +
+                    '<input id="swal-password" type="password" class="swal2-input" placeholder="Mot de passe">',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Se connecter',
+                preConfirm: () => {
+                    return {
+                        email: document.getElementById('swal-email').value,
+                        password: document.getElementById('swal-password').value
+                    };
+                }
+            });
+
+            if (!formValues) return;
+
+            try {
+
+                const response = await fetch("{{ path('ajax_login') }}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formValues)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Connecté !',
+                        timer: 1200,
+                        showConfirmButton: false
+                    });
+
+                    // simple refresh propre
+                    window.location.reload();
+
+                } else {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: data.message
+                    });
+
+                }
+
+            } catch (error) {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur serveur',
+                    text: 'Impossible de se connecter'
+                });
+
+            }
+
+        });
+
+    });
+
+});
+</script>
 
 {% endblock %}

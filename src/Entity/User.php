@@ -50,14 +50,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'passager', targetEntity: Reservation::class)]
     private Collection $reservations;
 
+    
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->trajetsConducteur = new ArrayCollection();
         $this->reservations = new ArrayCollection();
         $this->vehicules = new ArrayCollection();
-    // sécurité : rôle par défaut
+        // sécurité : rôle par défaut
         $this->roles = ['ROLE_USER'];
+
+       
     }
 
     // ===================== ID =====================
@@ -72,7 +76,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->pseudo;
     }
 
-    // ===================== PASSWORD =====================
     public function setPseudo(string $pseudo): static
     {
         $this->pseudo = $pseudo;
@@ -95,6 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email ?? '';
     }
 
+    // ===================== PASSWORD =====================
     public function getPassword(): string
     {
         return $this->password;
@@ -166,7 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-     // ===================== CRÉDITS =====================
+    // ===================== CRÉDITS =====================
     public function getCredits(): int
     {
         return $this->credits;
@@ -186,8 +190,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeCredits(int $credits): static
     {
-       $this->credits = max(0, $this->credits - $credits);
-
+        $this->credits = max(0, $this->credits - $credits);
         return $this;
     }
 
@@ -211,5 +214,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getVehicules(): Collection
     {
         return $this->vehicules;
+    }
+    // ===================== _To_String du conducteur Pseudo =====================
+    public function __toString(): string
+    {
+        return $this->pseudo;
     }
 }

@@ -22,8 +22,9 @@ class CovoiturageController extends AbstractController
     // =========================
     // GET /covoiturages
     // =========================
+
     #[Route('/covoiturages', name: 'covoiturage_search', methods: ['GET'])]
-    public function search(Request $request): Response
+        public function search(Request $request): Response
         {
             $villesDepart = $this->trajetRepository->findDistinctDepartures();
             $villesArrivee = $this->trajetRepository->findDistinctArrivals();
@@ -57,13 +58,14 @@ class CovoiturageController extends AbstractController
             return $this->render('covoiturage/recherche.html.twig', [
                 'villesDepart'  => $villesDepart,
                 'villesArrivee' => $villesArrivee,
-                'trajets'       => $trajets,
+                'trajetsAVenir' => $trajets,
                 'depart'        => $depart,
                 'destination'   => $destination,
                 'date'          => $dateString,
                 'passager'      => $passager,
             ]);
         }
+   
 
     // =========================
     // POST /trajets/creer
@@ -74,7 +76,7 @@ class CovoiturageController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('login');
         }
 
         $villeDepart  = trim($request->request->get('ville_depart', ''));
@@ -108,7 +110,7 @@ class CovoiturageController extends AbstractController
                 $this->addFlash('error', $error);
             }
 
-            return $this->redirectToRoute('trajet_form');
+            return $this->redirectToRoute('trajet_create_form');
         }
 
         $trajet = new Trajet();
@@ -132,4 +134,12 @@ class CovoiturageController extends AbstractController
 
         return $this->redirectToRoute('mes_trajets');
     }
+
+    #[Route('/covoiturage/{id}', name: 'covoiturage_show', methods: ['GET'])]
+        public function show(Trajet $trajet): Response
+        {
+            return $this->render('covoiturage/show.html.twig', [
+                'trajet' => $trajet,
+            ]);
+        }
 }

@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du trajet{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h2>
+                {{ trajet.villeDepart }} → {{ trajet.villeArrivee }}
+            </h2>
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Date :</strong>
+                {{ trajet.dateDepart|date('d/m/Y') }}
+            </p>
+
+            <p>
+                <strong>Heure :</strong>
+                {{ trajet.dateDepart|date('H:i') }}
+            </p>
+
+            <p>
+                <strong>Places restantes :</strong>
+                {{ trajet.placesDispo }}
+            </p>
+
+            <p>
+                <strong>Prix :</strong>
+                {{ trajet.prix }} crédits
+            </p>
+
+            <p>
+                <strong>Conducteur :</strong>
+                {{ trajet.conducteur }}
+            </p>
+
+        </div>
+
+    </div>
+    <div class="text-center mt-4">
+    <a href="{{ path('covoiturage_search') }}"
+       class="btn btn-primary">
+        ← Retour à la recherche
+    </a>
+</div>
+</div>
+
+{% endblock %}

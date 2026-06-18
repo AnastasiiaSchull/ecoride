@@ -1,0 +1,15 @@
+parameters:
+    uploads_directory: '%kernel.project_dir%/public/uploads'
+    photos_directory: '%kernel.project_dir%/public/uploads/profils'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%uploads_directory%'

@@ -15,6 +15,10 @@ class Avis
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    private ?Reservation $reservation = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $conducteur = null;
 
     #[ORM\ManyToOne]
@@ -30,10 +34,21 @@ class Avis
     #[ORM\Column(options: ['default' => false])]
     private bool $approuve = false;
 
-
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getReservation(): ?Reservation
+    {
+        return $this->reservation;
+    }
+
+    public function setReservation(?Reservation $reservation): static
+    {
+        $this->reservation = $reservation;
+
+        return $this;
     }
 
     public function getConducteur(): ?User
@@ -44,6 +59,7 @@ class Avis
     public function setConducteur(?User $conducteur): static
     {
         $this->conducteur = $conducteur;
+
         return $this;
     }
 
@@ -55,6 +71,7 @@ class Avis
     public function setPassager(?User $passager): static
     {
         $this->passager = $passager;
+
         return $this;
     }
 
@@ -66,6 +83,7 @@ class Avis
     public function setNote(int $note): static
     {
         $this->note = $note;
+
         return $this;
     }
 
@@ -77,6 +95,7 @@ class Avis
     public function setCommentaire(string $commentaire): static
     {
         $this->commentaire = $commentaire;
+
         return $this;
     }
 

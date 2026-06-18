@@ -1,0 +1,50 @@
+{% if app.user %}
+
+    {#<div>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin_dashboard') }}" class="btn btn-primary">
+                Dashboard
+            </a>
+        {% endif %}
+
+        <a href="{{ path('logout') }}" class="btn btn-danger">
+            Déconnexion
+        </a>
+    </div>
+
+    {% else %}
+
+    <a href="#" id="login-btn" class="btn btn-primary">
+        Se connecter
+    </a>#}
+
+    {% if is_granted('ROLE_ADMIN') %}
+
+                    <div>
+                        <a href="{{ path('admin_dashboard') }}" class="btn btn-primary hero-login2">
+                            Dashboard
+                        </a>
+
+                        <a href="{{ path('logout') }}" id="logout-link" class="btn btn-danger hero-login">
+                            Déconnexion
+                        </a>
+                    </div>
+
+                {% elseif app.user %}
+
+                    {# utilisateur connecté (ROLE_USER ou autre) #}
+                    <div>
+                        <a href="{{ path('logout') }}" id="logout-link" class="btn btn-danger hero-login">
+                            Déconnexion
+                        </a>
+                    </div>
+
+                {% else %}
+
+                    <a href="{{ path('login') }}" class="btn btn-primary hero-login">
+                        Se connecter
+                    </a>
+
+        {% endif %}
+
+{% endif %}

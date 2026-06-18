@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes trajets{% endblock %}
+
+{% block body %}
+
+<div class="container py-4">
+
+    <h2 class="mb-4">Mes trajets proposés</h2>
+
+    {% if trajets is empty %}
+
+        <div class="alert alert-warning">
+            Vous n'avez proposé aucun trajet.
+        </div>
+
+    {% else %}
+
+        <div class="row g-3">
+
+            {% for trajet in trajets %}
+
+                <div class="col-12">
+
+                    <div class="card">
+
+                        <div class="card-body">
+
+                            <h5>
+                                {{ trajet.villeDepart }}
+                                →
+                                {{ trajet.villeArrivee }}
+                            </h5>
+
+                            <p class="mb-1">
+                                Départ :
+                                {{ trajet.dateDepart|date('d/m/Y H:i') }}
+                            </p>
+
+                            <p class="mb-1">
+                                Prix :
+                                {{ trajet.prix }} €
+                            </p>
+
+                            <p class="mb-0">
+                                Places :
+                                {{ trajet.placesDispo }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+    {# ===================== BUTTON RETOUR ===================== #}
+    <div class="mt-4 text-center">
+        <a href="{{ path('profile_dashboard') }}" class="btn btn-outline-secondary">
+            ← Retour au profil
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

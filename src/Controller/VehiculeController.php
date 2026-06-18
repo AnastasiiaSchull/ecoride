@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\VehiculeRepository;
 use App\Repository\PreferenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,18 +9,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class VehicleController extends AbstractController
+class VehiculeController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private VehiculeRepository $vehiculeRepository,
         private PreferenceRepository $preferenceRepository
     ) {}
 
     // =========================
     // CREATE FORM
     // =========================
-    #[Route('/vehicules/creer', name: 'vehicle_create_form', methods: ['GET'])]
+    #[Route('/vehicules/creer', name: 'vehicule_create_form', methods: ['GET'])]
     public function new(): Response
     {
         $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
@@ -40,7 +38,7 @@ class VehicleController extends AbstractController
     // =========================
     // STORE VEHICULE
     // =========================
-    #[Route('/vehicules/creer', name: 'vehicle_store', methods: ['POST'])]
+    #[Route('/vehicules/creer', name: 'vehicule_store', methods: ['POST'])]
     public function store(Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
@@ -52,7 +50,11 @@ class VehicleController extends AbstractController
         $couleur = trim($request->request->get('couleur'));
         $energie = trim($request->request->get('energie'));
         $places  = (int) $request->request->get('places');
-        $prefs   = (array) $request->request->get('preferences', []);
+        $prefs = $request->request->all('preferences');
+
+            if (!is_array($prefs)) {
+                $prefs = [];
+            }
 
         $errors = [];
 
@@ -89,11 +91,7 @@ class VehicleController extends AbstractController
         // PREFERENCES (ManyToMany)
         // =========================
         foreach ($prefs as $prefId) {
-            if (!ctype_digit((string)$prefId)) {
-                continue;
-            }
-
-            $pref = $this->preferenceRepository->find((int)$prefId);
+        $pref = $this->preferenceRepository->find((int)$prefId);
 
             if ($pref) {
                 $vehicule->addPreference($pref);

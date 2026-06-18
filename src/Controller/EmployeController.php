@@ -1,9 +1,10 @@
 <?php
-
 namespace App\Controller;
 
+use App\Form\PhotoProfilFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,90 +13,78 @@ class EmployeController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em
+        
     ) {}
 
-    // =========================
-    // DASHBOARD EMPLOYÉ
-    // =========================
-    #[Route('/employe', name: 'employe_dashboard', methods: ['GET'])]
-    public function dashboard(): Response
+    #[Route('/employe/profil', name: 'employe_profil', methods: ['GET', 'POST'])]
+    public function profil(
+        Request $request
+    ):Response
     {
         $this->denyAccessUnlessGranted('ROLE_EMPLOYE');
 
-        $conn = $this->em->getConnection();
+        $user = $this->getUser();
 
-        // Avis à modérer
-        $avis = $conn->fetchAllAssociative("
-            SELECT a.id, a.commentaire, a.note,
-                   u1.pseudo AS passager,
-                   u2.pseudo AS chauffeur
-            FROM avis a
-            JOIN users u1 ON a.passager_id = u1.id
-            JOIN users u2 ON a.conducteur_id = u2.id
-            WHERE a.approuve = 0
-            ORDER BY a.id DESC
-        ");
+        $form = $this->createForm(PhotoProfilFormType::class, $user);
 
-        // Problèmes signalés
-        $problemes = $conn->fetchAllAssociative("
-            SELECT 
-                a.id AS avis_id,
-                p.pseudo AS passager,
-                p.email AS email_passager,
-                c.pseudo AS chauffeur,
-                c.email AS email_chauffeur,
-                t.ville_depart,
-                t.ville_arrivee,
-                t.date_depart,
-                a.commentaire AS description
-            FROM avis a
-            JOIN trajets t ON a.conducteur_id = t.conducteur_id
-            JOIN users p ON a.passager_id = p.id
-            JOIN users c ON a.conducteur_id = c.id
-            WHERE a.approuve = 1
-              AND a.is_problem = 1
-            ORDER BY a.id DESC
-        ");
+        $form->handleRequest($request);
 
-        return $this->render('employe/dashboard.html.twig', [
-            'avis' => $avis,
-            'problemes' => $problemes,
-        ]);
-    }
+        if ($form->isSubmitted() && $form->isValid()) {
 
-    // =========================
-    // MODERATION
-    // =========================
-    #[Route('/employe/moderation', name: 'employe_moderate', methods: ['POST'])]
-    public function moderate(Request $request): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_EMPLOYE');
-
-        $avisId = (int) $request->request->get('avis_id');
-        $action = $request->request->get('action');
-        $isProblem = $request->request->has('is_problem') ? 1 : 0;
-
-        if (!$avisId || !in_array($action, ['valider', 'refuser'], true)) {
-            $this->addFlash('error', 'Requête invalide.');
-            return $this->redirectToRoute('employe_dashboard');
+            $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw new \LogicException('User attendu');
         }
 
-        $approuve = $action === 'valider' ? 1 : 0;
+        $file = $form->get('photo')->getData();
 
-        $conn = $this->em->getConnection();
-        $conn->executeStatement("
-            UPDATE avis 
-            SET approuve = :approuve,
-                is_problem = :is_problem
-            WHERE id = :id
-        ", [
-            'approuve' => $approuve,
-            'is_problem' => $isProblem,
-            'id' => $avisId
+        if (!$file) {
+            $this->addFlash('error', 'Erreur d\'upload.');
+            return $this->redirectToRoute('employe_profil');
+        }
+
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+        $ext = strtolower($file->guessExtension());
+
+        if (!in_array($ext, $allowed, true)) {
+            $this->addFlash('error', 'Type de fichier non autorisé.');
+            return $this->redirectToRoute('employe_profil');
+        }
+
+        if ($file->getSize() > 2 * 1024 * 1024) {
+            $this->addFlash('error', 'Fichier trop volumineux (max 2 Mo).');
+            return $this->redirectToRoute('employe_profil');
+        }
+
+        $safeName = 'u' . $user->getId() . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+
+        try {
+            $file->move(
+                $this->getParameter('photos_directory'),
+                $safeName
+            );
+        } catch (FileException $e) {
+            $this->addFlash('error', 'Impossible d\'enregistrer le fichier.');
+            return $this->redirectToRoute('employe_profil');
+        }
+
+        $user->setPhoto($safeName);
+        $this->em->flush();
+
+        $this->addFlash('success', 'Photo mise à jour.');
+        
+        }
+        return $this->render('employe/profil_employe.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
         ]);
-
-        $this->addFlash('success', 'Avis mis à jour.');
-
-        return $this->redirectToRoute('employe_dashboard');
+}
+    #[Route('/employe/moderation', name: 'employe_moderate', methods: ['GET','POST'])]
+    public function moderate()
+    {
+        $this->denyAccessUnlessGranted('ROLE_EMPLOYE');
+        return $this->redirectToRoute('admin_avis');
     }
+
+    
 }

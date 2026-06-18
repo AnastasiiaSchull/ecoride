@@ -6,12 +6,24 @@
 
 <div class="container py-5">
 
-```
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
 <div class="card shadow border-0 mb-4">
+
     <div class="card-body text-center">
 
         {% if user.photo %}
-            <img src="{{ asset('uploads/' ~ user.photo) }}"
+        <img
+            src="{{ asset('uploads/profils/' ~ (app.user.photo ?? 'default.png')) }}"
                  alt="Photo de profil"
                  class="rounded-circle border mb-3"
                  width="150"
@@ -29,6 +41,7 @@
 </div>
 
 {# RÔLES #}
+{% if not is_granted('ROLE_ADMIN') %}
 <div class="card shadow-sm mb-4">
     <div class="card-header">
         <i class="bi bi-person-badge me-2"></i>
@@ -37,14 +50,16 @@
 
     <div class="card-body">
 
-        {% for role in roles %}
-            <span class="badge bg-primary me-2">
-                {{ role|capitalize }}
-            </span>
+        {% for role in app.user.roles %}
+            {% if role starts with 'ROLE_' and role != 'ROLE_USER' %}
+                <span class="badge bg-primary">
+                    {{ role|replace({'ROLE_': ''})|capitalize }}
+                </span>
+            {% endif %}
         {% endfor %}
 
         <div class="mt-3">
-            <a href="{{ path('app_roles_edit') }}"
+            <a href="{{ path('roles_edit') }}"
                class="btn btn-outline-primary">
                 Modifier mes rôles
             </a>
@@ -52,39 +67,53 @@
 
     </div>
 </div>
+{% endif %}
+{% if is_granted('ROLE_CONDUCTEUR') or is_granted('ROLE_PASSAGER') %}
 
-{% if 'conducteur' in roles %}
+    {# PHOTO DE PROFIL #}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <i class="bi bi-camera me-2"></i>
+                Photo de profil
+            </div>
 
-    {# PHOTO #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header">
-            <i class="bi bi-camera me-2"></i>
-            Photo de profil
-        </div>
+            <div class="card-body text-center">
 
-        <div class="card-body">
-
-            <form method="post"
-                  enctype="multipart/form-data"
-                  action="{{ path('app_upload_photo') }}">
-
+                {# AVATAR ACTUEL + FALLBACK #}
                 <div class="mb-3">
-                    <input type="file"
-                           name="photo"
-                           class="form-control"
-                           accept="image/*"
-                           required>
+                    <img
+                        src="{{ asset('uploads/profils/' ~ (app.user.photo ?? 'default.png')) }}"
+                        alt="Avatar"
+                        class="rounded-circle shadow-sm"
+                        width="120"
+                        height="120"
+                        style="object-fit: cover;"
+                    >
                 </div>
 
-                <button class="btn btn-primary">
-                    Mettre à jour
-                </button>
+                {# FORM UPLOAD #}
+                <form method="post"
+                    enctype="multipart/form-data"
+                    action="{{ path('profile_upload_photo') }}">
 
-            </form>
+                    <div class="mb-3">
+                        <input type="file"
+                            name="photo"
+                            class="form-control"
+                            accept="image/png, image/jpeg, image/webp"
+                            required>
+                    </div>
 
+                    <button class="btn btn-primary w-100">
+                        Mettre à jour la photo
+                    </button>
+
+                </form>
+
+            </div>
         </div>
-    </div>
 
+    {% if is_granted('ROLE_CONDUCTEUR')%}
     {# VEHICULES #}
     <div class="card shadow-sm mb-4">
         <div class="card-header">
@@ -131,16 +160,16 @@
                 </div>
 
             {% endif %}
-
-            <a href="{{ path('app_vehicule_create') }}"
+    
+            <a href="{{ path('vehicule_create_form') }}"
                class="btn btn-success">
                 <i class="bi bi-plus-circle"></i>
                 Ajouter un véhicule
             </a>
-
+    
         </div>
     </div>
-
+    {% endif %}
 {% endif %}
 
 {# CRÉDITS #}
@@ -156,7 +185,7 @@
             {{ credits }} crédits
         </h4>
 
-        <a href="{{ path('app_credits') }}"
+        <a href="{{ path('profile_credits_store') }}"
            class="btn btn-warning">
             Ajouter des crédits
         </a>
@@ -164,16 +193,16 @@
     </div>
 </div>
 
-{% if credits_utilises is not null %}
+{% if creditsUtilises is not null %}
     <div class="alert alert-primary">
-        <strong>{{ credits_utilises }}</strong>
+        <strong>{{ creditsUtilises }}</strong>
         trajet(s) réservé(s) en tant que passager.
     </div>
 {% endif %}
 
-{% if credits_gagnes is not null %}
+{% if creditsGagnes is not null %}
     <div class="alert alert-success">
-        <strong>{{ credits_gagnes }}</strong>
+        <strong>{{ creditsGagnes }}</strong>
         réservation(s) reçue(s) en tant que conducteur.
     </div>
 {% endif %}
@@ -187,30 +216,30 @@
 
     <div class="card-body d-flex flex-wrap gap-2">
 
-        {% if 'conducteur' in roles %}
+        {% if 'ROLE_CONDUCTEUR' in app.user.roles %}
 
-            <a href="{{ path('app_mes_trajets') }}"
+            <a href="{{ path('trajet_details') }}"
                class="btn btn-primary">
                 Mes trajets
             </a>
 
-            <a href="{{ path('app_trajet_create') }}"
+            <a href="{{ path('trajet_create_form') }}"
                class="btn btn-success">
                 Créer un trajet
             </a>
 
-        {% endif %}
+        {% else %}
 
-        <a href="{{ path('app_mes_reservations') }}"
+        <a href="{{ path('reservation_my') }}"
            class="btn btn-info text-white">
             Mes réservations
         </a>
-
+{% endif %}
     </div>
 </div>
 
 {# AVIS #}
-{% if 'passager' in roles %}
+{% if 'ROLE_PASSAGER' in app.user.roles %}
 
     <div class="card shadow-sm">
 
@@ -220,11 +249,10 @@
         </div>
 
         <div class="card-body">
-
-            {% if conducteursAvis %}
-
+                {% for reservation in conducteursAvis %}
+                
                 <form method="post"
-                      action="{{ path('app_avis_create') }}">
+                    action="{{ path('avis_store', { id: reservation.id}) }}">
 
                     <div class="mb-3">
                         <label class="form-label">
@@ -239,9 +267,14 @@
                                 -- Sélectionner --
                             </option>
 
-                            {% for c in conducteursAvis %}
-                                <option value="{{ c.id }}">
-                                    {{ c.pseudo }}
+                            {#{% for c in conducteursAvis %}
+                                <option value="{{ c.trajet.id }}">
+                                    {{ c.trajet.conducteur }}
+                                </option>
+                            {% endfor %}#}
+                            {% for reservation in conducteursAvis %}
+                                <option value="{{ reservation.id }}">
+                                    {{ reservation.trajet }}
                                 </option>
                             {% endfor %}
 
@@ -275,27 +308,28 @@
                                   rows="5"
                                   required></textarea>
                     </div>
-
+                    
                     <button class="btn btn-primary">
                         Envoyer l'avis
                     </button>
-
+                    <br><br>
                 </form>
-
-            {% else %}
+                {% endfor %}
+                <br>
+            
 
                 <div class="alert alert-info mb-0">
                     Aucun conducteur à évaluer pour le moment.
                 </div>
 
-            {% endif %}
+            
 
         </div>
 
     </div>
 
 {% endif %}
-```
+
 
 </div>
 

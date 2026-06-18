@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un trajet{% endblock %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block body %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-lg-8">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0 text-black">Créer un trajet</h2>
+                </div>
+
+                <div class="card-body">
+
+                    {# FLASH ERRORS #}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+
+                    {{ form_start(form, {
+                        action: path('trajet_store'),
+                        method: 'POST',
+                        attr: { class: 'needs-validation' }
+                    }) }}
+
+                    {# VILLES #}
+                    <div class="mb-3">
+                        {{ form_label(form.villeDepart, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                        {{ form_widget(form.villeDepart, {
+                            attr: {
+                                class: 'form-control form-control-lg border border-1 rounded-2',
+                                placeholder: 'Ville de départ'
+                            }
+                        }) }}
+                        {{ form_errors(form.villeDepart) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.villeArrivee, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                        {{ form_widget(form.villeArrivee, {
+                            attr: {
+                                class: 'form-control form-control-lg border border-1 rounded-2',
+                                placeholder: 'Ville d’arrivée'
+                            }
+                        }) }}
+                        {{ form_errors(form.villeArrivee) }}
+                    </div>
+
+                    {# DATES #}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.dateDepart, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(form.dateDepart, {
+                                attr: {
+                                    class: 'form-control js-datetime border'
+                                }
+                            }) }}
+                            {{ form_errors(form.dateDepart) }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.dateArrivee, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(form.dateArrivee, {
+                                attr: {
+                                    class: 'form-control js-datetime border'
+                                }
+                            }) }}
+                            {{ form_errors(form.dateArrivee) }}
+                        </div>
+                    </div>
+
+                    {# PRIX + PLACES #}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.prix, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(form.prix, {
+                                attr: {
+                                    class: 'form-control border rounded-2',
+                                    placeholder: 'Prix (€)'
+                                }
+                            }) }}
+                            {{ form_errors(form.prix) }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.placesDispo, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(form.placesDispo, {
+                                attr: {
+                                    class: 'form-control border rounded-2',
+                                    placeholder: 'Places disponibles'
+                                }
+                            }) }}
+                            {{ form_errors(form.placesDispo) }}
+                        </div>
+                    </div>
+
+                    {# VEHICULE #}
+                    <div class="mb-3">
+                        {{ form_label(form.vehicule, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                        {{ form_widget(form.vehicule, {
+                            attr: {
+                                class: 'form-select border rounded-2'
+                            }
+                        }) }}
+                        {{ form_errors(form.vehicule) }}
+                    </div>
+
+                    {# PREFERENCES #}
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Préférences du trajet</label>
+
+                        <div class="row">
+                            {% for child in form.preferences %}
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-check p-2 border rounded-2">
+                                        {{ form_widget(child, {
+                                            attr: { class: 'form-check-input' }
+                                        }) }}
+                                        {{ form_label(child, null, {
+                                            label_attr: { class: 'form-check-label ms-1' }
+                                        }) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {{ form_errors(form.preferences) }}
+                    </div>
+
+                    {# SUBMIT #}
+                    <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">
+                        Publier le trajet
+                    </button>
+
+                    {{ form_end(form) }}
+
+                </div>
+
+            </div>
+            {# ===================== BUTTON RETOUR ===================== #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('profile_dashboard') }}" class="btn btn-outline-secondary">
+                ← Retour au profil
+            </a>
+        </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

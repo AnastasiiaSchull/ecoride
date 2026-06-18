@@ -38,19 +38,19 @@ class ReservationController extends AbstractController
 
         if (!$trajetId) {
             $this->addFlash('error', 'ID du trajet manquant.');
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('profile_dashboard');
         }
 
         $trajet = $this->trajetRepository->find($trajetId);
 
         if (!$trajet || $trajet->getPlacesDispo() <= 0) {
             $this->addFlash('error', 'Trajet introuvable ou complet.');
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('profile_dashboard');
         }
 
         if (!in_array('ROLE_PASSAGER', $user->getRoles(), true)) {
             $this->addFlash('error', 'Vous devez être passager pour réserver.');
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('profile_dashboard');
         }
 
         $price = (int) $trajet->getPrix();
@@ -106,6 +106,20 @@ class ReservationController extends AbstractController
 
         $reservations = $this->reservationRepository
             ->findBy(['passager' => $user]);
+        if ($this->isGranted('ROLE_CONDUCTEUR') && $this->isGranted('ROLE_PASSAGER') ) {
+        
+
+        return $this->render('reservations/mes_reservations.html.twig', [
+            'reservations' => $reservations
+        ]);
+        }
+        if ($this->isGranted('ROLE_CONDUCTEUR')) {
+        $this->addFlash('error', "Pas de réservation en tant que conducteur !");
+
+        return $this->redirectToRoute('profile_dashboard');
+        }
+
+        
 
         return $this->render('reservations/mes_reservations.html.twig', [
             'reservations' => $reservations

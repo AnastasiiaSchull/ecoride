@@ -1,0 +1,7 @@
+#cookie-banner {
+    display: none;
+}
+
+#cookie-banner.show {
+    display: block;
+}

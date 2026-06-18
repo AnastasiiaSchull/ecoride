@@ -1,0 +1,92 @@
+/* =======================
+   GLOBAL RESET
+======================= */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-size: 1rem;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* =======================
+   NAVBAR ELEMENTS
+======================= */
+.logo {
+    height: 36px;
+    width: auto;
+}
+
+/* LED */
+.led-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.led-off {
+    background-color: #adb5bd;
+    box-shadow: none;
+}
+
+.led-on {
+    background-color: #5cff8d;
+    box-shadow: 0 0 6px #5cff8d;
+}
+
+/* =======================
+   MENU DESKTOP + BASE
+======================= */
+.top-menu {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+}
+
+.top-menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.top-menu a:hover {
+    opacity: 0.7;
+}
+
+/* =======================
+   HIDDEN STATE (IMPORTANT)
+   → PAS DE display:none
+======================= */
+.top-menu.hidden {
+    
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+/* =======================
+   MOBILE
+======================= */
+@media (max-width: 991px) {
+
+    .top-menu {
+        position: absolute;
+        top: 60px;
+        right: 10px;
+
+        flex-direction: column;
+        gap: 18px;
+
+        background: #212529;
+        padding: 16px 20px;
+        border-radius: 10px;
+
+        font-size: 1.2rem;
+        z-index: 999;
+    }
+}

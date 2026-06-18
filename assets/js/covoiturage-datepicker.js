@@ -18,8 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     safeAddEvent(dateInput, 'change', function () {
         if (!dateLabel) return;
+
         const date = new Date(this.value);
         if (isNaN(date)) return;
+
         dateLabel.textContent = date.toLocaleDateString('fr-FR');
     });
 
@@ -82,11 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 popup.style.display = 'none';
 
-
                 const departVille = $('depart')?.value;
                 const arriveeVille = $('destination')?.value;
 
                 if (!departVille || !arriveeVille) return;
+
                 fetch(`../pages/get_places_personnes.php?ville_depart=${encodeURIComponent(departVille)}&ville_arrivee=${encodeURIComponent(arriveeVille)}&date=${encodeURIComponent(selected)}`)
                     .then(res => res.json())
                     .then(data => {
@@ -126,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-
         const mainVille = type === 'depart' ? departVille : destinationVille;
         updateAvailableDates(type, mainVille);
     });
@@ -135,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // CLOSE POPUP OUTSIDE CLICK
     // =========================
     const popup = $('calendar-popup');
-
 
     document.addEventListener('click', (e) => {
         const trigger = $('custom-date-trigger');
@@ -157,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const type = document.querySelector('input[name="type"]:checked')?.value;
         if (type !== 'depart') return;
+
         const departVille = this.value;
         if (!departVille) return;
 

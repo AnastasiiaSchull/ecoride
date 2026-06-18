@@ -12,6 +12,7 @@ class HomeController extends AbstractController
     public function __construct(
         private TrajetRepository $trajetRepository
     ) {}
+
     // =========================
     // GET /
     // =========================
@@ -23,10 +24,11 @@ class HomeController extends AbstractController
 
         $trajetsAVenir = $this->trajetRepository->find(3);
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('covoiturage/recherche.html.twig', [
             'villesDepart'  => $villesDepart,
             'villesArrivee' => $villesArrivee,
             'trajetsAVenir' => $trajetsAVenir,
         ]);
     }
+ 
 }

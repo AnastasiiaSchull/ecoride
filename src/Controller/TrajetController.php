@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Entity\Trajet;
+use App\Form\TrajetFormType;
 use App\Repository\TrajetRepository;
 use App\Repository\VehiculeRepository;
 use App\Repository\ReservationRepository;
@@ -19,8 +22,8 @@ class TrajetController extends AbstractController
         private VehiculeRepository $vehiculeRepository,
         private ReservationRepository $reservationRepository
     ) {}
-
-     #[Route('/recherche', name: 'trajet_search', methods: ['GET'])]
+    
+    #[Route('/recherche', name: 'trajet_search', methods: ['GET'])]
         public function search(Request $request): Response
         {
             $depart = $request->query->get('depart');
@@ -51,122 +54,126 @@ class TrajetController extends AbstractController
     // DETAILS
     // =========================
     #[Route('/trajets/details', name: 'trajet_details', methods: ['GET'])]
-    public function details(Request $request): Response
+    public function details(): Response
     {
-        $id = (int) $request->query->get('id', 0);
+       $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
 
-        if ($id <= 0) {
-            throw $this->createNotFoundException('Trajet non trouvé');
-        }
+    $conducteur = $this->getUser();
 
-        $trajet = $this->trajetRepository->find($id);
+    $trajetsConducteur = $this->trajetRepository->findBy([
+        'conducteur' => $conducteur
+    ]);
 
-        if (!$trajet) {
-            throw $this->createNotFoundException('Trajet non trouvé');
-        }
-
-        $commentaires = [];
-
-        if ($trajet->getCommentaires()) {
-            $commentaires = array_filter(
-                array_map('trim', explode('||', $trajet->getCommentaires()))
-            );
-        }
-
-        return $this->render('trajets/details.html.twig', [
-            'trajet' => $trajet,
-            'commentaires' => $commentaires,
-        ]);
+    return $this->render('trajets/ses_trajets.html.twig', [
+        'trajets' => $trajetsConducteur
+    ]);
     }
 
     // =========================
     // CREATE FORM
     // =========================
-    #[Route('/trajets/creer', name: 'trajet_create_form', methods: ['GET'])]
-    public function new(): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
+    #[Route('/trajets/creer', name: 'trajet_create_form')]
+        public function new(Request $request, EntityManagerInterface $em): Response
+        {
+            //dd($request->request->all());
+            $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
+            
+            $trajet = new Trajet();
 
-        $user = $this->getUser();
+            $form = $this->createForm(TrajetFormType::class, $trajet);
+            $form->handleRequest($request);
 
-        $vehicules = $this->vehiculeRepository->findBy([
-            'user' => $user
-        ]);
+            if ($form->isSubmitted() && !$form->isValid()) {
+                dump((string) $form->getErrors(true, false));
+            }
 
-        $preferences = $this->em
-            ->getConnection()
-            ->fetchAllAssociative('SELECT * FROM preferences');
+            if ($form->isSubmitted() && $form->isValid()) {
 
-        return $this->render('trajets/create.html.twig', [
-            'vehicules' => $vehicules,
-            'preferences' => $preferences
-        ]);
-    }
+                $trajet->setConducteur($this->getUser());
+
+                $em->persist($trajet);
+                $em->flush();
+
+                return $this->redirectToRoute('trajet_details');
+            }
+            
+            return $this->render('trajets/create.html.twig', [
+                'form' => $form->createView()
+            ]);
+        }
 
     // =========================
     // STORE TRAJET
     // =========================
+    
     #[Route('/trajets', name: 'trajet_store', methods: ['POST'])]
-    public function store(Request $request): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
+        public function store(Request $request): Response
+        {
+            $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
 
-        $user = $this->getUser();
+            /** @var User $user */
+            $user = $this->getUser();
 
-        $villeDepart = trim($request->request->get('ville_depart'));
-        $villeArrivee = trim($request->request->get('ville_arrivee'));
-        $dateDepart = $request->request->get('date_depart');
-        $dateArrivee = $request->request->get('date_arrivee');
-        $prix = (int) $request->request->get('prix');
-        $vehiculeId = (int) $request->request->get('vehicule_id');
+            // 🔥 IMPORTANT : récupérer le bon namespace Symfony Form
+            $trajetData = $request->request->all()['trajet_form'] ?? [];
 
-        if (!$villeDepart || !$villeArrivee || !$dateDepart || $prix <= 0 || $vehiculeId <= 0) {
-            $this->addFlash('error', 'Champs invalides.');
-            return $this->redirectToRoute('trajet_create_form');
+            $villeDepart = trim($trajetData['villeDepart'] ?? '');
+            $villeArrivee = trim($trajetData['villeArrivee'] ?? '');
+            $dateDepart = $trajetData['dateDepart'] ?? null;
+            $dateArrivee = $trajetData['dateArrivee'] ?? null;
+            $prix = (float) ($trajetData['prix'] ?? 0);
+            $vehicule = $trajetData['vehicule'] ?? null;
+
+            if (is_object($vehicule)) {
+            $vehiculeId = $vehicule->getId();
+            }
+
+            //$vehiculeId = (int) $vehiculeId;
+
+            if (!$villeDepart || !$villeArrivee || !$dateDepart || $prix <= 0 || $vehicule <= 0) {
+                $this->addFlash('error', 'Champs invalides.');
+                return $this->redirectToRoute('trajet_create_form');
+            }
+           
+            $vehicule = $this->vehiculeRepository->find((int)$vehicule);
+
+            $trajet = new \App\Entity\Trajet();
+
+            $trajet->setConducteur($user);
+            $trajet->setVehicule($vehicule);
+            $trajet->setVilleDepart($villeDepart);
+            $trajet->setVilleArrivee($villeArrivee);
+            $trajet->setDateDepart(new \DateTime($dateDepart));
+            $trajet->setDateArrivee(new \DateTime($dateArrivee));
+            $trajet->setPrix($prix);
+            $trajet->setPlacesDispo($vehicule->getPlaces());
+            $trajet->setEco($vehicule->getEnergie() === 'electrique');
+            $trajet->setStatut('à_venir');
+
+            $this->em->persist($trajet);
+            $this->em->flush();
+
+            return $this->redirectToRoute('trajet_mine');
         }
-
-        $vehicule = $this->vehiculeRepository->find($vehiculeId);
-
-        if (!$vehicule || $vehicule->getUser() !== $user) {
-            $this->addFlash('error', 'Véhicule invalide.');
-            return $this->redirectToRoute('trajet_create_form');
-        }
-
-        $trajet = new \App\Entity\Trajet();
-        $trajet->setConducteur($user);
-        $trajet->setVehicule($vehicule);
-        $trajet->setVilleDepart($villeDepart);
-        $trajet->setVilleArrivee($villeArrivee);
-        $trajet->setDateDepart(new \DateTimeImmutable($dateDepart));
-        $trajet->setDateArrivee(new \DateTimeImmutable($dateArrivee));
-        $trajet->setPrix($prix);
-        $trajet->setPlacesDispo($vehicule->getPlaces());
-        $trajet->setEco($vehicule->getEnergie() === 'electrique');
-        $trajet->setStatut('à_venir');
-
-        $this->em->persist($trajet);
-        $this->em->flush();
-
-        return $this->redirectToRoute('trajet_mine');
-    }
-
     // =========================
     // MES TRAJETS
     // =========================
     #[Route('/mes_trajets', name: 'trajet_mine', methods: ['GET'])]
-    public function mine(): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
+        public function mine(TrajetRepository $trajetRepository): Response
+        {
+            $this->denyAccessUnlessGranted('ROLE_CONDUCTEUR');
 
-        $trajets = $this->trajetRepository->findBy(
-            ['conducteur' => $this->getUser()],
-            ['dateDepart' => 'DESC']
-        );
+            $user = $this->getUser();
 
-        return $this->render('trajets/mes_trajets.html.twig', [
-            'trajets' => $trajets
-        ]);
-    }
+            $trajets = $trajetRepository->findBy(
+                ['conducteur' => $user],
+                ['dateDepart' => 'DESC']
+            );
+
+            return $this->render('trajets/details.html.twig', [
+                'trajets' => $trajets
+            ]);
+        }
 
     // =========================
     // UPDATE STATUS
@@ -210,4 +217,6 @@ class TrajetController extends AbstractController
         $this->addFlash('success', 'Statut mis à jour.');
         return $this->redirectToRoute('trajet_mine');
     }
+
+    
 }

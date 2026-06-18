@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil Employé{% endblock %}
+
+{% block body %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h2 class="mb-0">Mon profil employé</h2>
+        </div>
+
+        <div class="card-body">
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            <div class="row">
+
+                <div class="col-md-4 text-center">
+
+                    {% if user.photo %}
+                        <img
+                            src="{{ asset('uploads/profils/' ~ user.photo) }}"
+                            alt="Photo de profil"
+                            class="img-fluid rounded-circle mb-3"
+                            style="width:200px;height:200px;object-fit:cover;">
+                    {% else %}
+                        <img
+                            src="{{ asset('images/default-user.png') }}"
+                            alt="Photo par défaut"
+                            class="img-fluid rounded-circle mb-3"
+                            style="width:200px;height:200px;object-fit:cover;">
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-8">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Pseudo</label>
+                        <input type="text"
+                               class="form-control"
+                               value="{{ user.pseudo }}"
+                               readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email"
+                               class="form-control"
+                               value="{{ user.email }}"
+                               readonly>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h4>Modifier ma photo</h4>
+
+            {{ form_start(form) }}
+
+                {{ form_row(form.photo) }}
+                <br><br>
+                <button type="submit" class="btn btn-primary">
+                    Mettre à jour la photo
+                </button>
+
+            {{ form_end(form) }}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

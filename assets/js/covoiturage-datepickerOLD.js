@@ -1,4 +1,4 @@
-/*document.addEventListener('DOMContentLoaded', function () {
+  /*document.addEventListener('DOMContentLoaded', function () {
 
       const dateInput = document.getElementById('real-date');
       const dateLabel = document.getElementById('date-label');

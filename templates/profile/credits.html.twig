@@ -6,14 +6,13 @@
 
 <div class="container py-5">
 
-```
 <div class="row justify-content-center">
 
-    <div class="col-md-6 col-lg-5">
+    <div class="col-md-6 col-lg-10">
 
         <div class="card shadow">
 
-            <div class="card-header text-center bg-primary text-white">
+            <div class="card-header text-center text-white">
 
                 <h2 class="mb-0">
                     <i class="bi bi-wallet2 me-2"></i>
@@ -37,7 +36,7 @@
                 {% endfor %}
 
                 <form method="post"
-                      action="{{ path('app_credits') }}">
+                      action="{{ path('profile_credits_form') }}">
 
                     <div class="mb-3">
 
@@ -83,7 +82,7 @@
 
             <div class="card-footer text-center">
 
-                <a href="{{ path('app_mon_espace') }}"
+                <a href="{{ path('profile_dashboard') }}"
                    class="btn btn-outline-secondary">
 
                     <i class="bi bi-arrow-left me-2"></i>
@@ -98,7 +97,6 @@
     </div>
 
 </div>
-```
 
 </div>
 

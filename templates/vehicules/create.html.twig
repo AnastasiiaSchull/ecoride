@@ -26,7 +26,7 @@
                         </div>
                     {% endif %}
 
-                    <form method="post" action="{{ path('app_vehicle_create') }}">
+                    <form method="post" action="{{ path('profile_vehicule_store') }}">
 
                         <div class="mb-3">
                             <label for="marque" class="form-label">Marque</label>
@@ -140,7 +140,7 @@
                                 Valider
                             </button>
 
-                            <a href="{{ path('app_mon_espace') }}"
+                            <a href="{{ path('profile_dashboard') }}"
                                class="btn btn-outline-secondary">
                                 Annuler
                             </a>

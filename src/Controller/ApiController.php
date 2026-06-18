@@ -75,4 +75,11 @@ class ApiController extends AbstractController
             'places_max' => $places
         ]);
     }
+    #[Route('/api/trajets/villes-depart', name: 'api_trajets_villes_depart')]
+        public function villesDepart(): JsonResponse
+        {
+            return $this->json(
+                $this->trajetRepository->findDistinctDepartures()
+            );
+        }
 }

@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation des avis{% endblock %}
+
+{% block body %}
+
+<div class="container py-4">
+
+    <h1 class="mb-4">
+        Avis en attente de validation
+    </h1>
+
+    <table class="table table-bordered table-striped">
+
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Auteur</th>
+                <th>Note</th>
+                <th>Commentaire</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for avis in avis %}
+
+            <tr>
+
+                <td>{{ avis.id }}</td>
+
+                <td>
+                    {{ avis.passager.pseudo }}
+                </td>
+
+                <td>
+                    {{ avis.note }}/5
+                </td>
+
+                <td>
+                    {{ avis.commentaire }}
+                </td>
+
+                <td>
+
+                    <a href="{{ path('admin_avis_valider', {id: avis.id}) }}"
+                       class="btn btn-success btn-sm">
+
+                        Valider
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% else %}
+
+            <tr>
+                <td colspan="5" class="text-center">
+                    Aucun avis à valider.
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+    {# ===================== BUTTON RETOUR ===================== #}
+    <div class="mt-4 text-center">
+        {% if (is_granted('ROLE_EMPLOYE')) %}
+        <a href="{{ path('home') }}" class="btn btn-outline-secondary">
+            ← Retour à l'accueil
+        </a>
+        {% elseif (is_granted('ROLE_ADMIN')) %}
+        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+            ← Retour à l'administration
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

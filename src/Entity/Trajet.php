@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TrajetRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TrajetRepository::class)]
@@ -48,10 +50,43 @@ class Trajet
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $commentaires = null;
 
+    // ✅ AJOUT IMPORTANT : preferences
+    #[ORM\ManyToMany(targetEntity: Preference::class)]
+    private Collection $preferences;
+
+    public function __construct()
+    {
+        $this->preferences = new ArrayCollection();
+    }
+
+    public function getPreferences(): Collection
+    {
+        return $this->preferences;
+    }
+
+    public function addPreference(Preference $preference): self
+    {
+        if (!$this->preferences->contains($preference)) {
+            $this->preferences->add($preference);
+        }
+
+        return $this;
+    }
+
+    public function removePreference(Preference $preference): self
+    {
+        $this->preferences->removeElement($preference);
+        return $this;
+    }
+
+    // ---------------- ID ----------------
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
+    // ---------------- CONDUCTEUR ----------------
 
     public function getConducteur(): ?User
     {
@@ -64,6 +99,8 @@ class Trajet
         return $this;
     }
 
+    // ---------------- VEHICULE ----------------
+
     public function getVehicule(): ?Vehicule
     {
         return $this->vehicule;
@@ -74,6 +111,8 @@ class Trajet
         $this->vehicule = $vehicule;
         return $this;
     }
+
+    // ---------------- VILLES ----------------
 
     public function getVilleDepart(): ?string
     {
@@ -97,6 +136,8 @@ class Trajet
         return $this;
     }
 
+    // ---------------- DATES ----------------
+
     public function getDateDepart(): ?\DateTimeInterface
     {
         return $this->dateDepart;
@@ -119,6 +160,8 @@ class Trajet
         return $this;
     }
 
+    // ---------------- PRIX ----------------
+
     public function getPrix(): ?float
     {
         return $this->prix;
@@ -129,6 +172,8 @@ class Trajet
         $this->prix = $prix;
         return $this;
     }
+
+    // ---------------- PLACES ----------------
 
     public function getPlacesDispo(): ?int
     {
@@ -141,6 +186,8 @@ class Trajet
         return $this;
     }
 
+    // ---------------- ECO ----------------
+
     public function isEco(): bool
     {
         return $this->eco;
@@ -152,6 +199,8 @@ class Trajet
         return $this;
     }
 
+    // ---------------- STATUT ----------------
+
     public function getStatut(): string
     {
         return $this->statut;
@@ -161,7 +210,9 @@ class Trajet
     {
         $this->statut = $statut;
         return $this;
-    } 
+    }
+
+    // ---------------- COMMENTAIRES ----------------
 
     public function getCommentaires(): ?string
     {
@@ -171,14 +222,20 @@ class Trajet
     public function setCommentaires(?string $commentaires): static
     {
         $this->commentaires = $commentaires;
-
         return $this;
     }
 
-    //à part un To_STring override d'affichage -----------------
+    // ---------------- STRING ----------------
 
     public function __toString(): string
     {
-        return $this->getVilleDepart() . ' → ' . $this->getVilleArrivee();
+        return sprintf(
+            '%s : %s → %s (%s)',
+            $this->conducteur,
+            $this->villeDepart,
+            $this->villeArrivee,
+            $this->dateDepart?->format('d/m/Y H:i')
+        );
     }
+
 }

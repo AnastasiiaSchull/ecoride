@@ -6,71 +6,62 @@
 
 <div class="container py-5">
 
-```
-<div class="row justify-content-center">
+    <div class="row justify-content-center">
 
-    <div class="col-md-8 col-lg-6">
+        <div class="col-12 col-md-10 col-lg-10">
 
-        <div class="card shadow border-0">
+            <div class="card shadow border-0">
 
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">
-                    <i class="bi bi-person-gear me-2"></i>
-                    Modifier mes rôles
-                </h3>
-            </div>
+                <div class="card-header bg-white border-bottom">
+                    <h3 class="mb-0">
+                        <i class="bi bi-person-gear me-2"></i>
+                        Modifier mes rôles
+                    </h3>
+                </div>
 
-            <div class="card-body">
+                <div class="card-body">
 
-                <form method="post"
-                      action="{{ path('app_roles_update') }}">
+                    <form method="post" action="{{ path('roles_update') }}">
 
-                    {% for role in all %}
+                        {% for role in all %}
 
-                        <div class="form-check mb-3">
+                            <div class="form-check mb-3">
 
-                            <input
-                                class="form-check-input"
-                                type="checkbox"
-                                name="roles[]"
-                                value="{{ role.nom }}"
-                                id="role_{{ role.nom }}"
-                                {% if role.nom in current %}checked{% endif %}
-                            >
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    name="roles[]"
+                                    value="{{ role.nom }}"
+                                    id="role_{{ role.nom }}"
+                                    {% if role.nom in current|default([]) %}checked{% endif %}
+                                >
 
-                            <label class="form-check-label"
-                                   for="role_{{ role.nom }}">
+                                <label class="form-check-label" for="role_{{ role.nom }}">
+                                    {{ role.label }}
+                                </label>
 
-                                {{ role.label }}
+                            </div>
 
-                            </label>
+                        {% endfor %}
+
+                        <div class="d-grid mt-4">
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Enregistrer
+                            </button>
 
                         </div>
 
-                    {% endfor %}
+                    </form>
 
-                    <div class="d-grid mt-4">
-
-                        <button type="submit"
-                                class="btn btn-primary">
-
-                            <i class="bi bi-check-circle me-2"></i>
-                            Enregistrer
-
-                        </button>
-
-                    </div>
-
-                </form>
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
-</div>
-```
 
 </div>
 

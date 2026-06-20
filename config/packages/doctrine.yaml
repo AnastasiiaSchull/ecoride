@@ -5,6 +5,7 @@ doctrine:
   orm:
     auto_generate_proxy_classes: true
     enable_lazy_ghost_objects: true
+    proxy_dir: "/tmp/doctrine-proxies"
     mappings:
       App:
         type: attribute
